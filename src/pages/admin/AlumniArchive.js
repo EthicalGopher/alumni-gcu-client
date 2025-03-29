@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import "./admin.css";
 import api from "../../services/api";
+import programmeData from '../../data/programmeData';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
 import * as XLSX from 'xlsx';  // For Excel download
@@ -11,6 +12,8 @@ const AlumniArchive = () => {
   const [users, setUsers] = useState([]);
   const [searchParams, setSearchParams] = useState({
     batch: '',
+    programme: '',
+    course: '',
     branch: ''
   });
   const [search, setSearch] = useState('');
@@ -21,15 +24,12 @@ const AlumniArchive = () => {
   const [modalContent, setModalContent] = useState(null);  // State to store dynamic modal content
   const [modalTitle, setModalTitle] = useState("");  // State for modal title
 
-  const branches = [
-    'Computer Science and Engineering',
-    'Mechanical Engineering',
-    'Civil Engineering',
-    'Electrical Engineering',
-    'Electronics and Communication Engineering',
-    'Information Technology',
-    'Chemical Engineering',
-  ];
+  // Get courses based on selected programme
+  const courses = searchParams.programme ? Object.keys(programmeData[searchParams.programme]?.courses) : [];
+
+  // Get branches based on selected course
+  const branches = searchParams.course ? programmeData[searchParams.programme]?.courses[searchParams.course] || [] : [];
+
 
   const fetchFilteredUsers = async () => {
     try {
@@ -162,7 +162,7 @@ const AlumniArchive = () => {
       <div className="search-group">
         <form onSubmit={handleSearchSubmit}>
           <div className="admin-form-group">
-            <label htmlFor="batch">Batch (Year)</label>
+            <label htmlFor="batch">Batch (Passing Year)</label>
             <input
               type="number"
               className="admin-form-input"
@@ -171,25 +171,46 @@ const AlumniArchive = () => {
               value={searchParams.batch}
               onChange={handleInputChange}
               placeholder="Enter Batch Year"
-              min="1900"
+              min="2006"
               max={new Date().getFullYear() + 4}
             />
           </div>
 
+          {/* Programme Dropdown */}
           <div className="admin-form-group">
-            <label htmlFor="branch">Branch</label>
-            <select
-              name="branch"
-              className="admin-form-input"
-              id="branch"
-              value={searchParams.branch}
-              onChange={handleInputChange}
-            >
-              <option value="" disabled>Select Branch</option>
-              {branches.map((branch, index) => (
-                <option key={index} value={branch}>{branch}</option>
-              ))}
-            </select>
+              <label htmlFor="programme">Programme</label>
+              <select id="programme" name="programme" className="admin-form-input" value={searchParams.programme} onChange={handleInputChange} >
+                  <option value="" disabled>Select Programme</option>
+                  {Object.keys(programmeData).map((prog) => (
+                      <option key={prog} value={prog}>{prog}</option>
+                  ))}
+              </select>
+          </div>
+
+          {/* Course Dropdown */}
+          <div className="admin-form-group">
+              <label htmlFor="course">
+                  Course
+              </label>
+              <select id="course" name="course" className="admin-form-input" value={searchParams.course} onChange={handleInputChange} disabled={!searchParams.programme} >
+                  <option value="" disabled>Select Course</option>
+                  {courses.map((course) => (
+                      <option key={course} value={course}>{course}</option>
+                  ))}
+              </select>
+          </div>
+
+          {/* Branch Dropdown */}
+          <div className="admin-form-group">
+              <label htmlFor="branch">
+                  Branch
+              </label>
+              <select id="branch" name="branch" className="admin-form-input" value={searchParams.branch} onChange={handleInputChange} disabled={!searchParams.course} >
+                  <option value="" disabled>Select Branch</option>
+                  {branches.map((branch) => (
+                      <option key={branch} value={branch}>{branch}</option>
+                  ))}
+              </select>
           </div>
 
           <button type="submit" className="admin-form-button">Search</button>

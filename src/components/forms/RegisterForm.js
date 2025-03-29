@@ -2,105 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaUser, FaEnvelope, FaPhone, FaUniversity, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import api from '../../services/api';
+import programmeData from '../../data/programmeData';
 import './form.css';
 
-const branches = [
-    "B.Tech in Civil Engineering",
-    "B.Tech in Computer Science and Engineering",
-    "B.Tech in Mechanical Engineering",
-    "B.Tech in Electrical Engineering",
-    "B.Tech in Electronics and Communication Engineering",
-    "B.Tech for Working Professional in Computer Science and Engineering",
-    "B.Tech for Working Professional in Mechanical Engineering",
-    "B.Tech for Working Professional in Electrical Engineering",
-    "BCA in Computer Applications",
-    "B.Pharm in Pharmacy",
-    "B.Pharm in Pharmacy Practice",
-    "BPT in Physiotherapy",
-    "B.Sc. in Physics",
-    "B.Sc. in Chemistry",
-    "B.Sc. in Mathematics",
-    "B.Sc. in Zoology",
-    "B.Sc. in Botany",
-    "B.Sc. in Fire and Safety",
-    "B.Sc. in Agriculture",
-    "B.Sc. in Hospitality and Hotel Management",
-    "B.A. in Sociology",
-    "B.A. in Psychology",
-    "B.Sc. in Psychology",
-    "B.A. in English",
-    "B.A. in Political Science",
-    "B.A. in History",
-    "B.A. in Education",
-    "B.A./B.Sc. in Economics",
-    "BBA in Business Administration",
-    "BSW in Social Work",
-    "BMLT in Medical Laboratory Technology",
-    "B.Com in Commerce",
-    "B.A. in Journalism and Mass Communication",
-    "M.Tech in Computer Science and Engineering",
-    "M.Tech for Working Professional in Computer Science and Engineering",
-    "M.Tech for Working Professional in Civil Engineering",
-    "M.Tech in VLSI Design and Embedded Systems",
-    "M.Tech in Structural Engineering",
-    "M.Tech in Thermal & Fluid Engineering",
-    "MCA in Computer Applications",
-    "MBA in Business Administration",
-    "M.Pharm in Pharmaceutics",
-    "M.Pharm in Pharmacology",
-    "M.Pharm in Pharmaceutical Chemistry",
-    "M.Pharm in Pharmacognosy",
-    "M.Sc. in Computer Science with Specialization in AI / Data Science / Cyber Security",
-    "M.Sc. in Physics",
-    "M.Sc. in Chemistry",
-    "M.Sc. in Mathematics",
-    "M.Sc. in Zoology",
-    "M.Sc. in Psychology",
-    "M.Sc. in Botany",
-    "M.A. in Sociology",
-    "M.A. in Psychology",
-    "M.A. in English",
-    "M.A. in Political Science",
-    "M.A. in Economics",
-    "MSW in Social Work",
-    "M.Com in Commerce",
-    "MMLT in Medical Laboratory Technology",
-    "MPT in Physiotherapy",
-    "M.A. in Journalism and Mass Communication",
-    "M.A. in Education",
-    "M.A. in History",
-    "LLM in Law",
-    "Ph.D. in English",
-    "Ph.D. in Comparative Literature",
-    "Ph.D. in Economics",
-    "Ph.D. in Gender Studies",
-    "Ph.D. in Political Science",
-    "Ph.D. in Sociology",
-    "Ph.D. in Social Work",
-    "Ph.D. in Botany",
-    "Ph.D. in Zoology",
-    "Ph.D. in Physics",
-    "Ph.D. in Chemistry",
-    "Ph.D. in Mathematics",
-    "Ph.D. in Commerce",
-    "Ph.D. in Pharmaceutical Sciences",
-    "Ph.D. in Health Technology & Policy",
-    "Ph.D. in Medical Laboratory Technology",
-    "Ph.D. in Electrical Engineering",
-    "Ph.D. in Civil Engineering",
-    "Ph.D. in Electronics & Communication Engineering",
-    "Ph.D. in Mechanical Engineering",
-    "Ph.D. in Computer Science & Engineering",
-    "Ph.D. in Psychology",
-    "Ph.D. in History",
-    "Ph.D. in Education",
-    "Ph.D. in Journalism and Mass Communication",
-    "Ph.D. in Physiotherapy",
-    "Ph.D. in Law",
-    "D.Pharm in Pharmacy",
-    "B.Tech in Applied Electronics and Instrumentation",
-    "B.Tech in Information Technology",
-];
 
 const Register = () => {
     const navigate = useNavigate();
@@ -108,6 +12,8 @@ const Register = () => {
         name: '',
         email: '',
         phone: '',
+        programme: '',
+        course: '',
         branch: '', 
         batch: '',
         roll_no: '',
@@ -118,6 +24,13 @@ const Register = () => {
     const [emailAvailable, setEmailAvailable] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [apiError, setApiError] = useState('');
+
+    // Get courses based on selected programme
+    const courses = formData.programme ? Object.keys(programmeData[formData.programme]?.courses) : [];
+
+    // Get branches based on selected course
+    const branches = formData.course ? programmeData[formData.programme]?.courses[formData.course] || [] : [];
+
 
     const validateForm = () => {
         const newErrors = {};
@@ -157,8 +70,16 @@ const Register = () => {
             newErrors.roll_no = "Please enter a valid roll number (numbers only)";
         }
 
-        if (!formData.branch) {
-            newErrors.branch = "Branch is required";
+        if (!formData.programme) {
+            newErrors.programme = "Please select a programme";
+        }
+    
+        if (!formData.course) {
+            newErrors.course = "Please select a course";
+        }
+    
+        if (branches.length > 0 && !formData.branch) {
+            newErrors.branch = "Please select a branch";
         }
 
         setErrors(newErrors);
@@ -179,6 +100,14 @@ const Register = () => {
     const onChange = e => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+
+        // Reset dependent dropdowns when a selection changes
+        if (name === "programme") {
+            setFormData(prev => ({ ...prev, course: "", branch: "" }));
+        } else if (name === "course") {
+            setFormData(prev => ({ ...prev, branch: "" }));
+        }
+
         // Clear errors for the field being edited
         setErrors(prev => ({ ...prev, [name]: '' }));
         setApiError('');
@@ -188,18 +117,28 @@ const Register = () => {
         e.preventDefault();
         setApiError('');
 
+        // Create a copy of form data
+        const dataToSubmit = { ...formData };
+        
+        // If no branches exist for the selected course, set branch to empty string
+        if (branches.length === 0) {
+            dataToSubmit.branch = '';
+        }
+
         if (!validateForm()) return;
 
-        const emailOk = await checkEmailAvailability(formData.email);
+        const emailOk = await checkEmailAvailability(dataToSubmit.email);
 
         if (emailOk) {
             try {
-                await api.post('/user/register', formData);
+                await api.post('/user/register', dataToSubmit);
                 // Clear form data after successful registration
                 setFormData({
                     name: '',
                     email: '',
                     phone: '',
+                    programme: '',
+                    course: '',
                     branch: '', 
                     batch: '',
                     roll_no: '',
@@ -207,6 +146,7 @@ const Register = () => {
                 });
                 navigate('/login');
             } catch (err) {
+                console.error('Registration Error:', err.response);
                 setApiError(err.response?.data?.message || 'Registration failed. Please try again.');
             }
         } else {
@@ -357,28 +297,50 @@ const Register = () => {
                     {errors.batch && <small id="batch-error" role="alert">{errors.batch}</small>}
                 </div>
 
+                {/* Programme Dropdown */}
                 <div className="input-group">
-                    <label htmlFor="branch">
-                        <FaUniversity aria-hidden="true" />
-                        <span className="sr-only">Branch</span>
-                    </label>
-                    <select
-                        id="branch"
-                        name='branch'
-                        value={formData.branch}
-                        onChange={onChange}
-                        aria-required="true"
-                        aria-invalid={!!errors.branch}
-                        aria-describedby={errors.branch ? "branch-error" : undefined}
-                        required
-                    >
-                        <option value='' disabled>Select Branch</option>
-                        {branches.sort().map((branchOption, index) => (
-                            <option key={index} value={branchOption}>{branchOption}</option>
-                        ))}
-                    </select>
-                    {errors.branch && <small id="branch-error" role="alert">{errors.branch}</small>}
-                </div>
+                            <label htmlFor="programme">
+                                <FaUniversity aria-hidden="true" />
+                                <span className="sr-only">Programme</span>
+                            </label>
+                            <select id="programme" name="programme" value={formData.programme} onChange={onChange} required>
+                                <option value="" disabled>Select Programme</option>
+                                {Object.keys(programmeData).map((prog) => (
+                                    <option key={prog} value={prog}>{prog}</option>
+                                ))}
+                            </select>
+                            {errors.programme && <small role="alert">{errors.programme}</small>}
+                        </div>
+
+                        {/* Course Dropdown */}
+                        <div className="input-group">
+                            <label htmlFor="course">
+                                <FaUniversity aria-hidden="true" />
+                                <span className="sr-only">Course</span>
+                            </label>
+                            <select id="course" name="course" value={formData.course} onChange={onChange} disabled={!formData.programme} required>
+                                <option value="" disabled>Select Course</option>
+                                {courses.map((course) => (
+                                    <option key={course} value={course}>{course}</option>
+                                ))}
+                            </select>
+                            {errors.course && <small role="alert">{errors.course}</small>}
+                        </div>
+
+                        {/* Branch Dropdown */}
+                        <div className="input-group">
+                            <label htmlFor="branch">
+                                <FaUniversity aria-hidden="true" />
+                                <span className="sr-only">Branch</span>
+                            </label>
+                            <select id="branch" name="branch" value={formData.branch} onChange={onChange} disabled={!formData.course} required>
+                                <option value="" disabled>Select Branch</option>
+                                {branches.map((branch) => (
+                                    <option key={branch} value={branch}>{branch}</option>
+                                ))}
+                            </select>
+                            {errors.branch && <small role="alert">{errors.branch}</small>}
+                        </div>
 
                 <div className="register">
                     Already Registered? <Link to="/login">LOGIN!</Link>
