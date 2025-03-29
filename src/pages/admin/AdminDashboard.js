@@ -54,8 +54,10 @@ const AdminDashboard = () => {
       const rollNoMatch = String(user.roll_no || '').toLowerCase().includes(searchTerm);
       const batchMatch = String(user.batch || '').toLowerCase().includes(searchTerm);
       const branchMatch = String(user.branch || '').toLowerCase().includes(searchTerm);
+      const programmeMatch = String(user.programme || '').toLowerCase().includes(searchTerm);
+      const courseMatch = String(user.course || '').toLowerCase().includes(searchTerm);
       
-      return nameMatch || emailMatch || rollNoMatch || batchMatch || branchMatch;
+      return nameMatch || emailMatch || rollNoMatch || batchMatch || branchMatch || programmeMatch || courseMatch;
     });
     
     setFilteredUsers(filtered);
@@ -119,6 +121,8 @@ const AdminDashboard = () => {
               <th onClick={() => handleSort('email')}>Email {getSortIndicator('email')}</th>
               <th onClick={() => handleSort('roll_no')}>Roll Number {getSortIndicator('roll_no')}</th>
               <th onClick={() => handleSort('batch')}>Batch {getSortIndicator('batch')}</th>
+              <th onClick={() => handleSort('programme')}>Programme{getSortIndicator('branch')}</th>
+              <th onClick={() => handleSort('course')}>Course{getSortIndicator('branch')}</th>
               <th onClick={() => handleSort('branch')}>Branch {getSortIndicator('branch')}</th>
               <th>Actions</th>
             </tr>
@@ -130,6 +134,8 @@ const AdminDashboard = () => {
                 <td>{user.email}</td>
                 <td>{user.roll_no}</td>
                 <td>{user.batch}</td>
+                <td>{user.programme}</td>
+                <td>{user.course}</td>
                 <td>{user.branch}</td>
                 <td>
                   <button onClick={() => approveUser(user.email)} className="admin-dashboard-btn-approve">Approve</button>
