@@ -1,7 +1,7 @@
 const programmeData = {
     UG: {
       courses: {
-        "B.Tech": [
+        "B.Tech/B.E.": [
           "Civil Engineering (CE)",
           "Computer Science and Engineering (CSE)",
           "Working Professional (CSE)",
@@ -45,7 +45,7 @@ const programmeData = {
     },
     PG: {
       courses: {
-        "M.Tech": [
+        "M.Tech/M.E.": [
           "Computer Science and Engineering (CSE)",
           "Working Professional (CSE)",
           "Working Professional (Civil Engineering)",
