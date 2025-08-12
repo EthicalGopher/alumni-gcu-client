@@ -90,7 +90,7 @@ const Home = () => {
                     <p>As we celebrate another year of growth, connection, and achievement, I am honored to address you as the President of our esteemed Alumni Association.
                         <br />
                         Our university has always been a beacon of excellence, fostering a community <a className='reg-msg' href="/registrarmsg">. . . [Read more]</a></p>
-                    <p className='vc-name'>Dr. Dipankar Saha
+                    <p className='vc-name'>Prof. Dipankar Saha
                         <br />
                         Registrar of Girijananda Chowdhury University
                     </p>
