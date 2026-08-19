@@ -1,66 +1,102 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
+import ProfilePhoto from './ProfilePhotoComponent';
 import "../components.css";
+import "./verified-users.css";
 
 const VerifiedUsersList = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
-  const [search, setSearch] = useState(''); // This holds the user input
-  const [loading, setLoading] = useState(false); // Optional loading state
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  // Handle input changes, but do not make API calls here
-  const handleInputChange = (event) => {
-    setSearch(event.target.value);
-  };
-
-  // Function to trigger the search when the button is clicked
-  const handleSearchClick = async () => {
-    if (!search.trim()) return; // Don't search for empty strings
-    setLoading(true); // Optional loading state
-
+  // Fetch verified students (loads all by default, or filters as query changes)
+  const fetchUsers = useCallback(async (searchQuery = '') => {
+    setLoading(true);
     try {
-      const response = await api.get(`/user/verified-users?search=${search}`);
-      setUsers(response.data);
+      const response = await api.get(`/user/verified-users?search=${encodeURIComponent(searchQuery)}`);
+      setUsers(response.data || []);
       setError('');
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      setError('Error fetching users');
+    } catch (err) {
+      console.error('Error fetching verified users:', err);
+      setError('Failed to load friends');
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  // Show students by default on initial mount
+  useEffect(() => {
+    fetchUsers('');
+  }, [fetchUsers]);
+
+  // Search student with each letter typed
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearch(query);
+    fetchUsers(query);
+  };
+
+  const handleClearSearch = () => {
+    setSearch('');
+    fetchUsers('');
   };
 
   return (
-    <div className="verified-users-container">
-      <div className="search-container">
+    <div className="friends-container">
+      <h2 className="friends-header-title">Friends</h2>
+
+      {/* Real-time Search Box */}
+      <div className="friends-search-box">
         <input
           type="text"
-          placeholder="Search by name, batch, or branch"
+          placeholder="Search by name, branch, or batch..."
           value={search}
-          onChange={handleInputChange} // Update the input value only
-          className="search-bar"
+          onChange={handleSearchChange}
+          className="friends-search-input"
         />
-        <button onClick={handleSearchClick} className="search-button">
-          {/* You can use a search icon here */}
-          Search
-        </button>
+        {search && (
+          <span onClick={handleClearSearch} className="friends-clear-btn" title="Clear">
+            ✕
+          </span>
+        )}
       </div>
 
-      {loading && <p>Loading...</p>}
-      {error && <p className="error">{error}</p>}
+      {loading && <p style={{ textAlign: 'center', color: '#64748b', padding: '20px 0' }}>Loading students...</p>}
+      {error && !loading && <p className="error" style={{ color: '#e74c3c', textAlign: 'center' }}>{error}</p>}
 
-      <div className="users-list">
-        {users.map(user => (
-          <Link to={`/profile/${user._id}`} key={user._id} className="user-item">
-            <img src="https://via.placeholder.com/50" alt="Profile" />
-            <div className="user-info">
-              <h3>{user.name}</h3>
-              <p>{user.branch}</p>, <p>{user.batch}</p>
-            </div>
-          </Link>
-        ))}
-      </div>
+      {/* Flex Row Layout with Shrink & Responsiveness */}
+      {!loading && !error && (
+        <div className="friends-flex-row">
+          {users.map((user) => (
+            <Link
+              to={`/profile/${user._id}`}
+              key={user._id}
+              className="friends-card"
+            >
+              <div className="friends-avatar-container">
+                <ProfilePhoto
+                  userId={user._id}
+                  className="friends-avatar-img"
+                />
+              </div>
+              <h4 className="friends-card-name">{user.name}</h4>
+              <p className="friends-card-branch">{user.branch || user.programme || 'Alumni'}</p>
+              <p className="friends-card-batch">Batch: {user.batch || 'N/A'}</p>
+              {user.currentWorkingPlace && (
+                <p className="friends-card-work">🏢 {user.currentWorkingPlace}</p>
+              )}
+            </Link>
+          ))}
+
+          {users.length === 0 && (
+            <p style={{ width: '100%', textAlign: 'center', color: '#64748b', padding: '30px 0' }}>
+              No students found matching "{search}".
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 };

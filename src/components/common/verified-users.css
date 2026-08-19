@@ -1,0 +1,123 @@
+/* Friends Tab Component Styles */
+.friends-container {
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin: 16px 0;
+  width: 100%;
+}
+
+.friends-header-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.friends-search-box {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.friends-search-input {
+  width: 100%;
+  padding: 10px 36px 10px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.friends-search-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.friends-clear-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+/* Flex row wrapper with shrink & wrap for responsive layout */
+.friends-flex-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+/* Vertically bigger rectangular profile card */
+.friends-card {
+  flex: 1 1 200px;
+  max-width: 250px;
+  min-width: 170px;
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.friends-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border-color: #2563eb;
+}
+
+.friends-avatar-container {
+  margin-bottom: 12px;
+}
+
+.friends-avatar-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #f1f5f9;
+}
+
+.friends-card-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 6px;
+  word-break: break-word;
+}
+
+.friends-card-branch {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0 0 4px;
+}
+
+.friends-card-batch {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.friends-card-work {
+  font-size: 0.8rem;
+  color: #2563eb;
+  font-weight: 500;
+  margin-top: 8px;
+  word-break: break-word;
+}
