@@ -1,5 +1,5 @@
 import React from 'react';
-import CardCarousel from '../../components/common/CardCarousel';
+
 
 const Scholarship = () => {
 

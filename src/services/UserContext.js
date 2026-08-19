@@ -1,11 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
-import axios from 'axios';
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -18,7 +18,11 @@ export const UserProvider = ({ children }) => {
                     }
                 } catch (err) {
                     console.error('Error during HTTP request:', err);
-                } 
+                } finally {
+                    setLoading(false);
+                }
+            } else {
+                setLoading(false);
             }
         };        
         fetchUser();
@@ -36,20 +40,18 @@ export const UserProvider = ({ children }) => {
             throw err; 
         }
     };
-    
 
     const logout = async () => {
         try {
             await api.post('/auth/logout');
-            setUser(null); //clearing the user state on logout
-            localStorage.removeItem('accessToken'); //removing the token from local storage
-            window.location.reload(); //reloading the page to reset userstate
+            setUser(null); // clearing the user state on logout
+            localStorage.removeItem('accessToken'); // removing the token from local storage
         } catch (err) {
             console.error('Error during logout:', err);
         }
     };
 
-    const refreshUser = async () => {
+    const refreshUser = useCallback(async () => {
         const accessToken = localStorage.getItem('accessToken');
         if (accessToken) {
           try {
@@ -61,7 +63,7 @@ export const UserProvider = ({ children }) => {
             console.error('Error refreshing user data:', err);
           }
         }
-      };
+    }, []);
 
     // Add the updateUserProfile function
     const updateUserProfile = (updatedUser) => {
@@ -69,7 +71,7 @@ export const UserProvider = ({ children }) => {
     };
 
     return (
-        <UserContext.Provider value={{ user, setUser, login, logout, updateUserProfile, refreshUser }}>
+        <UserContext.Provider value={{ user, setUser, loading, login, logout, updateUserProfile, refreshUser }}>
             {children}
         </UserContext.Provider>
     );

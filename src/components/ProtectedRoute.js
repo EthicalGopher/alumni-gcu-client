@@ -3,21 +3,21 @@ import { Navigate } from 'react-router-dom';
 import { UserContext } from '../services/UserContext';
 
 const ProtectedRoute = ({ element, requiredRole }) => {
-  const { user } = useContext(UserContext);
+  const { user, loading } = useContext(UserContext);
 
-  // Display a loading message while checking auth status
-  if (!user) {
-    return <div>Loading...</div>;
+  if (loading) {
+    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>Loading...</div>;
   }
 
   // Check if user is authenticated
   if (!user) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" replace />;
   }
 
   // Check if user has any of the required roles
-  if (requiredRole && requiredRole.length > 0 && !requiredRole.includes(user.role)) {
-    return <Navigate to="/forbidden" />;
+  const roles = Array.isArray(requiredRole) ? requiredRole : (requiredRole ? [requiredRole] : []);
+  if (roles.length > 0 && !roles.includes(user.role)) {
+    return <Navigate to="/forbidden" replace />;
   }
 
   return element;

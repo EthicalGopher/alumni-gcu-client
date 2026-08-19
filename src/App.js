@@ -18,7 +18,6 @@ import AdminLayout from "./pages/admin/AdminLayout";
 
 // Pages
 import Home from "./pages/Home";
-import FeedHome from "./components/feed/FeedHome";
 import Profile from "./pages/specific/Profile";
 import UpdateProfile from "./pages/specific/UpdateProfile";
 import ChangeProfilePicture from "./pages/specific/ChangeProfilePicture";
@@ -29,7 +28,7 @@ import AdminNewsForm from "./pages/admin/AdminNewsForm";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminEventsForm from "./pages/admin/AdminEventsForm";
 import PhotoUpload from "./pages/admin/PhotoUpload";
-import AlumniArchive from "../src/pages/admin/AlumniArchive";
+import AlumniArchive from "./pages/admin/AlumniArchive";
 import AdminEmailForm from "./pages/admin/AdminEmailForm";
 import BulkAddAlumni from "./pages/admin/AlumniRecordUpload";
 import CreateAdmin from "./pages/admin/CreateAdmin";
@@ -146,32 +145,8 @@ function App() {
                   }
                 />
                 <Route path="/forbidden" element={<Forbidden />} />
-                <Route path="/server-error" element={<ServerError />} />
+                <Route path="/post/:postId" element={<Home />} />
                 <Route path="*" element={<NotFound />} />
-              </Route>
-
-              {/* Welcome routes without bottomabar     */}
-
-              <Route element={<RootLayout hideBottomBar={true} />}>
-                <Route 
-                  path="/welcome" 
-                  element={
-                    <ProtectedRoute
-                      element={<FeedHome />}
-                      requiredRole={["superuser", "admin", "user"]}
-                    />
-                  }
-                />
-
-                <Route 
-                  path="/welcome/post/:postId" 
-                  element={
-                    <ProtectedRoute
-                      element={<FeedHome />}
-                      requiredRole={["superuser", "admin", "user"]}
-                    />
-                  }
-                />
               </Route>
 
               {/* Admin & SuperUser Routes */}

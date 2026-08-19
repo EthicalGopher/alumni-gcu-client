@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';  // Import axios
 import "../pages.css";
 import api from '../../services/api';
 

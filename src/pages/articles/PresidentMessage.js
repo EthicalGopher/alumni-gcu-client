@@ -12,7 +12,7 @@ const VCMessage = () => {
                             <h3>President’s Message:</h3>
                             </div>
                             <div className="letter-header-image">
-                                <img src="./assets/Pres-img-ssa.jpg" alt="President, SSA" />
+                                <img src="/assets/Pres-img-ssa.jpg" alt="President, SSA" />
                             </div>
                         </div>
 

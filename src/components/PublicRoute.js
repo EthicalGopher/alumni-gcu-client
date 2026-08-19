@@ -9,5 +9,5 @@ export const PublicRoute = ({ element }) => {
     return <Navigate to="/profile" replace />;
   }
   
-  return element;
+  return element;
 };

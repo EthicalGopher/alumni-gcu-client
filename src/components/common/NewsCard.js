@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "../components.css";
 import api from "../../services/api";
 
@@ -27,21 +26,24 @@ const NewsCard = () => {
     }, []);
 
     useEffect(() => {
+        if (!news || news.length === 0) return;
         const interval = setInterval(() => {
             setCurrentNewsIndex((prevIndex) => (prevIndex + 1) % news.length);
         }, rotationInterval);
 
         return () => clearInterval(interval);
-    }, [news]);
+    }, [news, rotationInterval]);
 
     const handleNewsClick = (newsItem) => {
-        navigate(`/news/${newsItem._id}`);
+        if (newsItem && newsItem._id) {
+            navigate(`/news/${newsItem._id}`);
+        }
     };
-    
 
-    if (news.length === 0) return null;
+    if (!news || news.length === 0) return null;
 
-    const currentNews = news[currentNewsIndex];
+    const currentNews = news[currentNewsIndex] || news[0];
+    if (!currentNews) return null;
 
     return (
         <div className="news-card-container">
@@ -54,7 +56,7 @@ const NewsCard = () => {
                     className="news-card-thumbnail"
                 />
                 ) : (
-                <img src="./assets/gcu-building.jpg" alt="Default Thumbnail" className="news-card-thumbnail"/>
+                <img src="/assets/gcu-building.jpg" alt="Default Thumbnail" className="news-card-thumbnail"/>
             )}
                 <div className="news-card-content">
                     <span className="news-card-label">News</span>

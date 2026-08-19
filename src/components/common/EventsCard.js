@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useUser } from '../../services/UserContext';
 import api from '../../services/api';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
@@ -10,7 +8,6 @@ const EventCard = () => {
   const [events, setEvents] = useState([]);
   const [currentEventIndex, setCurrentEventIndex] = useState(0);
   const navigate = useNavigate();
-  const { user } = useUser();
   const rotationInterval = 25000;
 
   // Fetch events when component mounts
@@ -30,21 +27,25 @@ const EventCard = () => {
 
   // Rotate current event being displayed
   useEffect(() => {
+    if (!events || events.length === 0) return;
     const interval = setInterval(() => {
       setCurrentEventIndex((prevIndex) => (prevIndex + 1) % events.length);
     }, rotationInterval);
 
     return () => clearInterval(interval);
-  }, [events]);
+  }, [events, rotationInterval]);
 
   const handleEventClick = (eventItem) => {
-    navigate(`/events/${eventItem._id}`);
+    if (eventItem && eventItem._id) {
+      navigate(`/events/${eventItem._id}`);
+    }
   };
 
   // Show nothing if no events are available
-  if (events.length === 0) return null;
+  if (!events || events.length === 0) return null;
 
-  const currentEvent = events[currentEventIndex];
+  const currentEvent = events[currentEventIndex] || events[0];
+  if (!currentEvent) return null;
 
   return (
     <div className="event-card-container">
@@ -57,7 +58,7 @@ const EventCard = () => {
             className="event-card-thumbnail"
           />
         ) : (
-          <img src="./assets/gcu-building.jpg" alt="Default Thumbnail" className="event-card-thumbnail" />
+          <img src="/assets/gcu-building.jpg" alt="Default Thumbnail" className="event-card-thumbnail" />
         )}
         <div className="event-card-content">
           <span className="event-card-label">Event</span>

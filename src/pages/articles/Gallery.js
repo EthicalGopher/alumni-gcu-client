@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../pages.css';
 import './articles.css';
+import '../../components/components.css';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -48,19 +49,24 @@ const Gallery = () => {
     <div className='main'>
       <div className="art-container">
         <div className="about-header">
-          <h1>Gallery</h1>
+          <h1>Gallery Albums</h1>
         </div>
-        <div className="goal-content-container">
-            <div className="albums-container">
+        <div className="goal-content-container py-8 px-4 w-full">
+            <div className="gallery-masonry-grid">
               {albums.map((album) => (
-                <div key={album._id} className="album-card" onClick={() => handleAlbumClick(album._id)}>
+                <div key={album._id} className="gallery-masonry-item" onClick={() => handleAlbumClick(album._id)}>
                   <img
                     src={`${BASE_URL}${album.lastImage}`}
                     alt={`${album.albumName}_thumbnail`}
-                    className="album-thumbnail"
+                    className="gallery-masonry-img"
                     loading="lazy"
                   />
-                  <h2 className="album-title">{album.albumName}</h2>
+                  <div className="p-3 bg-white border-t border-gray-100 text-center">
+                    <h2 className="text-base font-bold text-gray-800 m-0">{album.albumName}</h2>
+                  </div>
+                  <div className="gallery-masonry-overlay">
+                    <span>View Album</span>
+                  </div>
                 </div>
               ))}
             </div>

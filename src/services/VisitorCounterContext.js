@@ -1,5 +1,4 @@
 import React, { createContext, useState, useContext, useEffect, useRef } from "react";
-import axios from "axios";
 import api from "./api";
 
 const VisitorCounterContext = createContext();
@@ -8,7 +7,6 @@ export const useVisitorCounter = () => useContext(VisitorCounterContext);
 
 export const VisitorCounterProvider = ({ children }) => {
   const [visitorCount, setVisitorCount] = useState(null);
-  const [hasIncremented, setHasIncremented] = useState(false);
 
   const hasFetched = useRef(false);
 

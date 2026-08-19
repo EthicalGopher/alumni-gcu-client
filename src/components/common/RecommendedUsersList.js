@@ -102,7 +102,14 @@ const RecommendedUsersList = ({ onSwitchToFriends }) => {
             />
             <div>
               <h4 style={nameStyle}>{user.name}</h4>
-              <p style={branchBatchStyle}>{user.branch}, {user.batch}</p>
+              <p style={branchBatchStyle}>
+                {user.branch ? user.branch : 'Alumni'}{user.batch ? `, Batch of ${user.batch}` : ''}
+                {user.currentWorkingPlace && (
+                  <span style={{ display: 'block', color: '#2563eb', fontWeight: '500', fontSize: '0.82em', marginTop: '2px' }}>
+                    🏢 {user.currentWorkingPlace}
+                  </span>
+                )}
+              </p>
             </div>
           </Link>
         ))}

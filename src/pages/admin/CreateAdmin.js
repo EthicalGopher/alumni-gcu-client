@@ -16,7 +16,7 @@ const CreateAdmin = () => {
   // Fetch all admins from the API
   const fetchAdmins = async () => {
     try {
-      const token = localStorage.getItem("token"); // Assuming the JWT is stored in localStorage
+      const token = localStorage.getItem("accessToken") || localStorage.getItem("token"); // Assuming the JWT is stored in localStorage
       const headers = { Authorization: `Bearer ${token}` };
       const response = await api.get(`/admin/get-admins`, { headers });
       setAdmins(response.data);
@@ -44,7 +44,7 @@ const CreateAdmin = () => {
     setStatusMessage("");
 
     try {
-      const token = localStorage.getItem("token"); // Assuming the JWT is stored in localStorage
+      const token = localStorage.getItem("accessToken") || localStorage.getItem("token"); // Assuming the JWT is stored in localStorage
       const headers = { Authorization: `Bearer ${token}` };
 
       const response = await api.post("/admin/create-admin", formData, { headers });

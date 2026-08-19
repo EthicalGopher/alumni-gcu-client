@@ -12,7 +12,7 @@ const VCMessage = () => {
                                 <h3>From the Vice-Chancellor’s desk:</h3>
                             </div>
                             <div className="letter-header-image">
-                                <img src="./assets/vc-gcu.jpg" alt="Vice Chancellor, GCU" />
+                                <img src="/assets/vc-gcu.jpg" alt="Vice Chancellor, GCU" />
                             </div>
                         </div>
                         <p>Girijananda Chowdhury University (GCU) stands as a testament to the vision and dedication of the Shrimanta Shankar Academy Society. Established in October 2022, GCU marks a significant milestone in Assam's academic landscape, emerging as a private university under the Assam Private University Act following approval by the Assam Legislative Assembly. This milestone reflects our unwavering commitment to education and our endeavor to create a transformative impact on society.</p>

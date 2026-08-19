@@ -25,7 +25,7 @@ const AlumniArchive = () => {
   const [modalTitle, setModalTitle] = useState("");  // State for modal title
 
   // Get courses based on selected programme
-  const courses = searchParams.programme ? Object.keys(programmeData[searchParams.programme]?.courses) : [];
+  const courses = searchParams.programme ? Object.keys(programmeData[searchParams.programme]?.courses || {}) : [];
 
   // Get branches based on selected course
   const branches = searchParams.course ? programmeData[searchParams.programme]?.courses[searchParams.course] || [] : [];

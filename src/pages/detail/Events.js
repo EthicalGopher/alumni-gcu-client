@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import '../pages.css';
 import { UserContext } from '../../services/UserContext';
 import Pagination from '../../components/common/Pagination';
@@ -14,7 +13,6 @@ const EventList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [eventsPerPage] = useState(10);
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -62,7 +60,7 @@ const EventList = () => {
                     alt="Events Thumbnail"
                   />
                 ) : (
-                  <img src="./assets/gcu-building.jpg" alt="Default Thumbnail" />
+                  <img src="/assets/gcu-building.jpg" alt="Default Thumbnail" />
                 )}
               </div>
               <div className="news-content">

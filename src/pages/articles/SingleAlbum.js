@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../services/api";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
@@ -32,9 +32,7 @@ const SingleAlbum = () => {
       }
 
       try {
-        const response = await axios.get(
-          `${BASE_URL}/api/images/album/${id}`
-        );
+        const response = await api.get(`/images/album/${id}`);
         
         if (!response.data || Object.keys(response.data).length === 0) {
           navigate('/404', { replace: true });
@@ -80,11 +78,11 @@ const SingleAlbum = () => {
           <h1>{album.albumName}</h1>
         </div>
         <div className="goal-content-container">
-          <div className="images-container">
+          <div className="gallery-masonry-grid">
             {album.images.map((image, index) => (
               <div
                 key={index}
-                className="image-wrapper"
+                className="gallery-masonry-item"
                 onClick={() => {
                   setPhotoIndex(index);
                   setIsOpen(true);
@@ -93,10 +91,10 @@ const SingleAlbum = () => {
                 <img
                   src={`${BASE_URL}${image}`}
                   alt={`${album.albumName}_image_${index}`}
-                  className="image"
+                  className="gallery-masonry-img"
                   loading="lazy" 
                 />
-                <div className="image-overlay">
+                <div className="gallery-masonry-overlay">
                   <span>Click to enlarge</span>
                 </div>
               </div>

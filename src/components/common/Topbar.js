@@ -9,7 +9,7 @@ const Topbar = () => {
   const location = useLocation();
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { user, logout, loading, updateUserProfile } = useUser(); // Assuming that you have a method to update the user profile
+  const { user, logout, loading } = useUser();
   const dropdownRef = useRef(null);
   const menuToggleRef = useRef(null);
   const navContentRef = useRef(null);
@@ -124,13 +124,8 @@ const Topbar = () => {
               <li><NavLink to="/news" className={({ isActive }) => isActive ? 'active' : ''}>News</NavLink></li>
               <li><NavLink to="/events" className={({ isActive }) => isActive ? 'active' : ''}>Events</NavLink></li>
               <li><NavLink to="/gallery" className={({ isActive }) => isActive ? 'active' : ''}>Gallery</NavLink></li>
-              {user && (
-                <>
-                  <li><NavLink to="/welcome" className={({ isActive }) => isActive ? 'active' : ''}>Feed</NavLink></li>
-                  {(user.role === 'admin'|| user.role === 'superuser') && (
-                    <li><NavLink to="/admin-stats" className={({ isActive }) => isActive ? 'active' : ''}>Admin Dashboard</NavLink></li>
-                  )}
-                </>
+              {user && (user.role === 'admin'|| user.role === 'superuser') && (
+                <li><NavLink to="/admin-stats" className={({ isActive }) => isActive ? 'active' : ''}>Admin Dashboard</NavLink></li>
               )}
             </ul>
           </div>

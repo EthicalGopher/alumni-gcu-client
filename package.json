@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
+    "browser-image-compression": "^2.0.2",
     "canvas-to-blob": "^1.0.0",
     "chart.js": "^4.4.7",
     "date-fns": "^4.1.0",

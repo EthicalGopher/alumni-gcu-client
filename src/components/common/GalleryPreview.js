@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../components.css';
 
@@ -6,13 +6,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
 
 const GalleryPreview = () => {
     const [photos, setPhotos] = useState([]);
-    const [currentIndex, setCurrentIndex] = useState(0);
     const navigate = useNavigate();
-    const [visiblePhotosCount, setVisiblePhotosCount] = useState(5);
-    const carouselRef = useRef(null);
-    const intervalRef = useRef(null);
-    let startX = useRef(0);
-    let isDragging = useRef(false);
 
     useEffect(() => {
         const fetchPhotos = async () => {
@@ -28,86 +22,40 @@ const GalleryPreview = () => {
         fetchPhotos();
     }, []);
 
-    useEffect(() => {
-        const updatePhotoCount = () => {
-            setVisiblePhotosCount(window.innerWidth < 768 ? 2 : 5);
-        };
-        updatePhotoCount();
-        window.addEventListener('resize', updatePhotoCount);
-        return () => window.removeEventListener('resize', updatePhotoCount);
-    }, []);
-
-    const nextSlide = () => {
-        setCurrentIndex((prev) => (prev + 1) % photos.length);
-    };
-
-    useEffect(() => {
-        if (photos.length > 0) {
-            intervalRef.current = setInterval(nextSlide, 5000); // Auto slide every 5 seconds
-        }
-        return () => clearInterval(intervalRef.current);
-    }, [photos]);
-
-    const resetAutoSlide = () => {
-        clearInterval(intervalRef.current);
-        intervalRef.current = setInterval(nextSlide, 5000);
-    };
-
-    const handleTouchStart = (e) => {
-        startX.current = e.touches ? e.touches[0].clientX : e.clientX;
-        isDragging.current = true;
-    };
-
-    const handleTouchMove = (e) => {
-        if (!isDragging.current) return;
-        const moveX = e.touches ? e.touches[0].clientX : e.clientX;
-        const diff = startX.current - moveX;
-
-        if (diff > 50) {
-            nextSlide();
-            isDragging.current = false;
-            resetAutoSlide();
-        } else if (diff < -50) {
-            setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
-            isDragging.current = false;
-            resetAutoSlide();
-        }
-    };
-
-    const handleTouchEnd = () => {
-        isDragging.current = false;
-    };
-
     return (
         <div className="gallery-preview-container">
-            <h2 className="gallery-heading">Gallery Preview</h2>
-            {photos.length > 0 ? (
-                <div
-                    className="carousel"
-                    ref={carouselRef}
-                    onTouchStart={handleTouchStart}
-                    onTouchMove={handleTouchMove}
-                    onTouchEnd={handleTouchEnd}
-                    onMouseDown={handleTouchStart}
-                    onMouseMove={handleTouchMove}
-                    onMouseUp={handleTouchEnd}
-                    onMouseLeave={handleTouchEnd}
+            <div className="flex justify-between items-center w-full max-w-6xl mb-6 px-4">
+                <h2 className="text-2xl font-bold text-gray-800">Gallery Preview</h2>
+                <button 
+                    onClick={() => navigate('/gallery')}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg transition-colors shadow-sm"
                 >
-                    {photos
-                        .slice(currentIndex, currentIndex + visiblePhotosCount)
-                        .concat(photos.slice(0, Math.max(0, visiblePhotosCount - (photos.length - currentIndex))))
-                        .map((photo, index) => (
+                    View All Albums →
+                </button>
+            </div>
+
+            {photos.length > 0 ? (
+                <div className="gallery-masonry-grid">
+                    {photos.slice(0, 10).map((photo, index) => (
+                        <div 
+                            key={index} 
+                            className="gallery-masonry-item"
+                            onClick={() => navigate('/gallery')}
+                        >
                             <img
-                                key={index}
                                 src={`${BASE_URL}${photo.image}`}
                                 alt={`photo_${index}`}
-                                className="item"
-                                onClick={() => navigate('/gallery')}
+                                className="gallery-masonry-img"
+                                loading="lazy"
                             />
-                        ))}
+                            <div className="gallery-masonry-overlay">
+                                <span>View Gallery</span>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             ) : (
-                <p>Loading photos...</p>
+                <p className="text-gray-500 py-6">Loading photos...</p>
             )}
         </div>
     );
