@@ -49,7 +49,7 @@ const SharedImagesDeleteModal = ({ isOpen, onClose, itemId, api, onImagesDeleted
 
       await api.delete(endpoint, {
         headers: { 
-          Authorization: `Bearer ${localStorage.getItem('accessToken') || localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json'
         },
         data: { imagesToDelete: selectedImages }

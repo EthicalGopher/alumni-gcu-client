@@ -15,7 +15,7 @@ const AdminLayout = () => {
       <div className="admin-nav-bar">
       <nav className="admin-sidebar">
       {/* <div className="logo-container">
-        <img src="/assets/LOGO 1.jpg"  alt="Logo" className="admin-logo" />
+        <img src="./assets/LOGO 1.jpg"  alt="Logo" className="admin-logo" />
       </div> */}
       <ul>
         <li>

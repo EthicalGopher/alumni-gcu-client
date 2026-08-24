@@ -23,7 +23,7 @@ const ResetPassword = () => {
         e.preventDefault();
         try {
             await api.post('/user/reset-password', formData);
-            navigate('/');
+            navigate('/welcome');
         } catch (err) {
             console.error(err.response.data);
         }

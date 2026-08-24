@@ -14,6 +14,7 @@ const ModalGalleryManager = ({ show, onHide }) => {
   const [deleteMessage, setDeleteMessage] = useState('');
   const [selectedImages, setSelectedImages] = useState([]);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     if (show) {

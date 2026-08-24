@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
@@ -119,7 +120,7 @@ const SingleEvent = () => {
 								>
 									<img
 										src={`${BASE_URL}${image}`}
-										alt={`Event ${index + 1}`}
+										alt={`Events Image ${index + 1}`}
 										className="single-news-events-image"
 									/>
 									<div className="image-overlay">

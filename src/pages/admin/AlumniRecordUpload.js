@@ -34,7 +34,7 @@ const BulkAddAlumni = ({ onUploadSuccess }) => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (!file.name.toLowerCase().endsWith('.csv')) {
+      if (!file.name.endsWith('.csv') || file.type !== "text/csv") {
         setMessage('❌ Invalid file format. Please upload a valid CSV file.');
         setSelectedFile(null);
         fileInputRef.current.value = null;

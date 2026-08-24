@@ -189,7 +189,7 @@ const FeedPostView = ({ onBack }) => {
         <div className="feed-post-container">
             <button 
                 onClick={() => {
-                    navigate("/", { 
+                    navigate("/welcome", { 
                         replace: true,
                         state: { refresh: true } 
                     });

@@ -7,6 +7,7 @@ import PostList from "../../components/common/PostList";
 import RecommendedUsersList from "../../components/common/RecommendedUsersList";
 import FeedLayout from "./FeedLayout";
 import FeedNavbar from "./FeedNavbar";
+import VerifiedUsersList from "../common/VerifiedUsersList";
 import Spinner from "../common/LoadingSpinner"; // Import Spinner
 import { useParams, useNavigate } from 'react-router-dom';
 import FeedPostView from './FeedPostView';
@@ -18,7 +19,7 @@ const Welcome = () => {
     const [isFetchingMore, setIsFetchingMore] = useState(false); // New state for infinite scrolling
     const [error, setError] = useState(null);
     const [posts, setPosts] = useState([]);
-    const [, setTotalPages] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const [currentUser, setCurrentUser] = useState(null);
     const [activeTab, setActiveTab] = useState("home");
     const [hasMore, setHasMore] = useState(true);
@@ -41,16 +42,19 @@ const Welcome = () => {
     // Fetch posts function
     const fetchPosts = useCallback(
         async (page, category = "post", reset = false) => {
-            if (activeTab === "my-posts" && !currentUser) return;
+            if (!currentUser) return;
 
             if (!reset) setIsFetchingMore(true);
 
             try {
                 let endpoint;
-                if (activeTab === "my-posts" && currentUser) {
+                if (activeTab === "my-posts") {
                     endpoint = `/posts/user/${currentUser.id}?page=${page}&limit=${postsPerPage}`;
                 } else {
                     endpoint = `/posts/get-post?page=${page}&limit=${postsPerPage}&category=${category}`;
+                    if (activeTab !== "my-posts") {
+                        endpoint += `&excludeUser=${currentUser?.id}`;
+                    }
                 }
 
                 const response = await api.get(endpoint);
@@ -62,8 +66,7 @@ const Welcome = () => {
 
                 currentPageRef.current = page;
                 setTotalPages(response.data.totalPages);
-                // Guests are restricted to first page only
-                setHasMore(currentUser ? page < response.data.totalPages : false);
+                setHasMore(page < response.data.totalPages);
             } catch (err) {
                 setError("Failed to load posts. Please try again later.");
             } finally {
@@ -74,27 +77,27 @@ const Welcome = () => {
         [currentUser, activeTab]
     );
 
-    // Initial posts fetch when tab changes or component mounts
+    // Initial posts fetch when tab changes
     useEffect(() => {
-        setIsLoading(true);
-        setPosts([]);
-        currentPageRef.current = 1;
-        setHasMore(true);
-        const category =
-            activeTab === "jobs"
-                ? "job"
-                : activeTab === "education"
-                ? "education"
-                : activeTab === "my-posts"
-                ? "all"
-                : "post";
-        fetchPosts(1, category, true);
-    }, [activeTab, fetchPosts]);
+        if (currentUser) {
+            setIsLoading(true);
+            setPosts([]);
+            currentPageRef.current = 1;
+            setHasMore(true);
+            const category =
+                activeTab === "jobs"
+                    ? "job"
+                    : activeTab === "education"
+                    ? "education"
+                    : activeTab === "my-posts"
+                    ? "all"
+                    : "post";
+            fetchPosts(1, category, true);
+        }
+    }, [activeTab, currentUser, fetchPosts]);
 
-    // Infinite scroll observer (only active for logged-in users)
+    // Infinite scroll observer
     useEffect(() => {
-        if (!currentUser) return;
-
         const observer = new IntersectionObserver(
             (entries) => {
                 const first = entries[0];
@@ -116,7 +119,7 @@ const Welcome = () => {
         if (loaderRef.current) observer.observe(loaderRef.current);
 
         return () => observer.disconnect();
-    }, [currentUser, hasMore, isFetchingMore, posts.length, activeTab, fetchPosts]);
+    }, [hasMore, isFetchingMore, posts.length, activeTab, fetchPosts]);
 
     const handleSubmitPost = async (content, category) => {
         try {
@@ -144,7 +147,7 @@ const Welcome = () => {
                         }}
                         onClick={() => {
                             setActiveTab("my-posts");
-                            navigate("/");
+                            navigate("/welcome");
                         }}
                     >
                         View in My Posts
@@ -195,12 +198,6 @@ const Welcome = () => {
     };
 
     const handleLike = async (postId) => {
-        if (!currentUser) {
-            toast.info("Please log in to like posts and join discussions.", {
-                onClick: () => navigate("/login")
-            });
-            return;
-        }
         try {
             const response = await api.put(`/posts/${postId}/like`);
             setPosts((prevPosts) =>
@@ -233,55 +230,41 @@ const Welcome = () => {
     const mainContent = (
         <>
             {postId ? (
-                <FeedPostView onBack={() => navigate("/")} />
+                <FeedPostView onBack={() => navigate("/welcome")} />
             ) : (
                 <div className="flex flex-col">
-                    <PostForm onSubmitPost={handleSubmitPost} isLoading={isLoading} error={error} />
-                    {isLoading && posts.length === 0 ? (
-                        <div className="flex justify-center py-4">
-                            <Spinner />
-                        </div>
-                    ) : (
+                    {activeTab !== "friends" && (
+                        <PostForm onSubmitPost={handleSubmitPost} isLoading={isLoading} error={error} />
+                    )}
+                    {activeTab !== "friends" && (
                         <>
-                            <PostList
-                                posts={posts}
-                                onDeletePost={handleDeletePost}
-                                onEditPost={handleEditPost}
-                                currentUser={currentUser}
-                                isLoading={isLoading}
-                                onLike={handleLike}
-                            />
-                            <div className="mt-4">
-                                {isFetchingMore && (
-                                    <div className="flex justify-center items-center h-12">
-                                        <Spinner />
-                                    </div>
-                                )}
-                                {currentUser && <div ref={loaderRef} style={{ height: "20px" }} />}
-                            </div>
-                            {!currentUser && posts.length > 0 && (
-                                <div className="guest-load-more-card">
-                                    <div className="guest-lock-icon">
-                                        <svg style={{ width: '24px', height: '24px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                        </svg>
-                                    </div>
-                                    <h3 className="guest-load-more-title">Log in to view more posts</h3>
-                                    <p className="guest-load-more-subtext">
-                                        Join the GCU Alumni network to view endless posts, create your own updates, like, comment, and connect with fellow alumni.
-                                    </p>
-                                    <div className="guest-load-more-actions">
-                                        <button onClick={() => navigate('/login')} className="guest-get-started-btn">
-                                            Log In to Access More
-                                        </button>
-                                        <button onClick={() => navigate('/register')} className="guest-register-outline-btn">
-                                            Register
-                                        </button>
-                                    </div>
+                            {isLoading && posts.length === 0 ? (
+                                <div className="flex justify-center py-4">
+                                    <Spinner />
                                 </div>
+                            ) : (
+                                <>
+                                    <PostList
+                                        posts={posts}
+                                        onDeletePost={handleDeletePost}
+                                        onEditPost={handleEditPost}
+                                        currentUser={currentUser}
+                                        isLoading={isLoading}
+                                        onLike={handleLike}
+                                    />
+                                    <div className="mt-4">
+                                        {isFetchingMore && (
+                                            <div className="flex justify-center items-center h-12">
+                                                <Spinner />
+                                            </div>
+                                        )}
+                                        <div ref={loaderRef} style={{ height: "20px" }} />
+                                    </div>
+                                </>
                             )}
                         </>
                     )}
+                    {activeTab === "friends" && <VerifiedUsersList />}
                 </div>
             )}
             <ToastContainer
@@ -302,7 +285,20 @@ const Welcome = () => {
         <FeedLayout
             leftSidebar={<FeedNavbar activeTab={activeTab} setActiveTab={setActiveTab} />}
             mainContent={mainContent}
-            rightSidebar={<RecommendedUsersList />}
+            rightSidebar={
+                <>
+                    {activeTab === "home" && (
+                        <RecommendedUsersList onSwitchToFriends={() => setActiveTab("friends")} />
+                    )}
+                    {activeTab === "jobs" && (
+                        <RecommendedUsersList onSwitchToFriends={() => setActiveTab("friends")} />
+                    )}
+                    {activeTab === "education" && <VerifiedUsersList />}
+                    {activeTab === "my-posts" && (
+                        <RecommendedUsersList onSwitchToFriends={() => setActiveTab("friends")} />
+                    )}
+                </>
+            }
         />
     );
 };

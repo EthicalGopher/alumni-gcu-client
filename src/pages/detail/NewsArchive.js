@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import '../pages.css';
 import Pagination from '../../components/common/Pagination';
 import api from '../../services/api';
@@ -59,7 +60,7 @@ const NewsList = () => {
                     alt="News Thumbnail"
                   />
                 ) : (
-                  <img src="/assets/gcu-building.jpg" alt="Default Thumbnail" />
+                  <img src="./assets/gcu-building.jpg" alt="Default Thumbnail" />
                 )}
               </div>
               <div className="news-content">

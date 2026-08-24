@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "./admin.css";
 import api from "../../services/api";
-import { Pie, Line } from 'react-chartjs-2';
+import { Bar, Pie, Line } from 'react-chartjs-2';
 import VisitorCounterBanner from '../../components/common/VisitorCounter';
 
 import {

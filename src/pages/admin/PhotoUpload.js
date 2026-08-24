@@ -4,15 +4,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import api from "../../services/api";
 import ModalGalleryManager from './ModalGalleryManager';
 import { Button } from 'react-bootstrap';
-import ImageCompressorToggle, { compressSingleImage } from '../../components/common/ImageCompressorToggle';
 
 const PhotoUpload = ({ onUploadSuccess }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const [rawFiles, setRawFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
-  const [isCompressing, setIsCompressing] = useState(false);
-  const [compressEnabled, setCompressEnabled] = useState(true);
-  const [compressionStats, setCompressionStats] = useState(null);
   const [previewUrls, setPreviewUrls] = useState([]);
   const [albumName, setAlbumName] = useState('');
   const [existingAlbums, setExistingAlbums] = useState([]);
@@ -37,62 +32,20 @@ const PhotoUpload = ({ onUploadSuccess }) => {
     fetchAlbums();
   }, []);
 
-  const processFiles = async (filesToProcess, shouldCompress) => {
-    if (!filesToProcess || filesToProcess.length === 0) {
-      setSelectedFiles([]);
-      setPreviewUrls([]);
-      setCompressionStats(null);
-      return;
-    }
-
-    setIsCompressing(true);
-    const origSize = filesToProcess.reduce((sum, f) => sum + f.size, 0);
-
-    let finalFiles = [];
-    if (shouldCompress) {
-      const compressedList = await Promise.all(
-        filesToProcess.map(file => compressSingleImage(file))
-      );
-      finalFiles = compressedList;
-    } else {
-      finalFiles = filesToProcess;
-    }
-
-    const compSize = finalFiles.reduce((sum, f) => sum + f.size, 0);
-    setSelectedFiles(finalFiles);
-    setCompressionStats({
-      originalSize: origSize,
-      compressedSize: compSize,
-      count: filesToProcess.length
-    });
-
-    // Update previews
-    const previews = [];
-    finalFiles.forEach(file => {
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    setSelectedFiles(files);
+  
+    // Reset preview URLs before updating
+    setPreviewUrls([]);
+  
+    files.forEach(file => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        previews.push(reader.result);
-        if (previews.length === finalFiles.length) {
-          setPreviewUrls(previews);
-        }
+        setPreviewUrls(prevUrls => [...prevUrls, reader.result]);
       };
       reader.readAsDataURL(file);
     });
-
-    setIsCompressing(false);
-  };
-
-  const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    setRawFiles(files);
-    processFiles(files, compressEnabled);
-  };
-
-  const handleToggleCompress = (enabled) => {
-    setCompressEnabled(enabled);
-    if (rawFiles.length > 0) {
-      processFiles(rawFiles, enabled);
-    }
   };
 
   const handleAlbumNameChange = (e) => {
@@ -185,13 +138,6 @@ const PhotoUpload = ({ onUploadSuccess }) => {
           ref={fileInputRef}
         />
       </div>
-
-      <ImageCompressorToggle 
-        isEnabled={compressEnabled} 
-        onToggle={handleToggleCompress} 
-        stats={compressionStats}
-        isCompressing={isCompressing}
-      />
 
       {previewUrls.length > 0 && (
         <div className="d-flex flex-wrap justify-content-center mb-3">

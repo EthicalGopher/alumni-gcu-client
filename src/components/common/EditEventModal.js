@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+import { UserContext } from '../../services/UserContext';
 import '../components.css';
 import api from '../../services/api';
 
 const EditEventModal = ({ eventId, isOpen, onClose, onEventUpdated }) => {
+  const { user } = useContext(UserContext);
   const [eventData, setEventData] = useState({
     title: '',
     content: '',

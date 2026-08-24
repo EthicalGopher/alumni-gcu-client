@@ -42,28 +42,12 @@ const PostForm = ({ onSubmitPost, isLoading, error }) => {
         setIsModalOpen(false);
     };
 
-    if (!user) {
-        return (
-            <div className="guest-join-card">
-                <h3 className="guest-join-title">Join the GCU Alumni Community</h3>
-                <p className="guest-join-subtext">
-                    Log in with your pre-registered student email address to share posts, like updates, and comment on alumni events.
-                </p>
-                <div className="guest-join-actions">
-                    <button onClick={() => window.location.href = '/login'} className="guest-get-started-btn">
-                        Get Started / Sign In
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="post-form-container">
             {!isModalOpen && (
                 <div className="post-form-collapsed" onClick={openModal}>
                     <ProfilePhoto 
-                        userId={user?._id || user?.id}
+                        userId={user._id}
                         className="rounded-full"
                     />
                     <input

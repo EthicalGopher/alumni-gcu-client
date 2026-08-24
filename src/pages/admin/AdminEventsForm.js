@@ -6,7 +6,7 @@ import api from '../../services/api';
 import SharedImagesDeleteModal from './SharedImagesDeleteModal';
 import SharedImagesAddModal from './SharedImagesAddModal';
 import ActionMenu from './ActionMenu';
-import ImageCompressorToggle, { compressSingleImage } from '../../components/common/ImageCompressorToggle';
+
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
 
@@ -28,10 +28,6 @@ const AdminEventsForm = () => {
     event_time: '',
     images: [],
   });
-  const [rawImages, setRawImages] = useState([]);
-  const [isCompressing, setIsCompressing] = useState(false);
-  const [compressEnabled, setCompressEnabled] = useState(true);
-  const [compressionStats, setCompressionStats] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const [isDeleteImagesModalOpen, setIsDeleteImagesModalOpen] = useState(false);
@@ -41,50 +37,11 @@ const AdminEventsForm = () => {
 
   const { title, content, organizer, event_date, event_time, images } = formData;
 
-  const processImages = async (files, shouldCompress) => {
-    if (!files || files.length === 0) {
-      setFormData(prev => ({ ...prev, images: [] }));
-      setCompressionStats(null);
-      return;
-    }
-
-    setIsCompressing(true);
-    const origSize = files.reduce((sum, f) => sum + f.size, 0);
-
-    let finalFiles = [];
-    if (shouldCompress) {
-      const compressedList = await Promise.all(
-        files.map(file => compressSingleImage(file))
-      );
-      finalFiles = compressedList;
-    } else {
-      finalFiles = files;
-    }
-
-    const compSize = finalFiles.reduce((sum, f) => sum + f.size, 0);
-    setFormData(prev => ({ ...prev, images: finalFiles }));
-    setCompressionStats({
-      originalSize: origSize,
-      compressedSize: compSize,
-      count: files.length
-    });
-    setIsCompressing(false);
-  };
-
   const onChange = (e) => {
     if (e.target.name !== 'images') {
       setFormData({ ...formData, [e.target.name]: e.target.value });
     } else {
-      const files = Array.from(e.target.files);
-      setRawImages(files);
-      processImages(files, compressEnabled);
-    }
-  };
-
-  const handleToggleCompress = (enabled) => {
-    setCompressEnabled(enabled);
-    if (rawImages.length > 0) {
-      processImages(rawImages, enabled);
+      setFormData({ ...formData, images: Array.from(e.target.files) });
     }
   };
 
@@ -106,9 +63,9 @@ const AdminEventsForm = () => {
     });
   
     try {
-      await api.post('/events/upload', data, {
+      const response = await api.post('/events/upload', data, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken') || localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'multipart/form-data'
         }
       });
@@ -189,7 +146,7 @@ const AdminEventsForm = () => {
     if (window.confirm("Are you sure you want to delete this event?")) {
       try {
         await api.delete(`/events/delete/${eventId}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('accessToken') || localStorage.getItem('token')}` }
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         setEventList(eventList.filter(event => event._id !== eventId));
         setMessage('Event Deleted Successfully');
@@ -319,12 +276,6 @@ const AdminEventsForm = () => {
                 multiple
               />
             </div>
-            <ImageCompressorToggle 
-              isEnabled={compressEnabled} 
-              onToggle={handleToggleCompress} 
-              stats={compressionStats}
-              isCompressing={isCompressing}
-            />
             <button 
               type="submit" 
               className="admin-form-button"
@@ -364,7 +315,7 @@ const AdminEventsForm = () => {
                   />
                 ) : (
                   <img
-                    src="/assets/gcu-building.jpg"
+                    src="./assets/gcu-building.jpg"
                     alt="Default Thumbnail"
                     style={{ height: '100px', objectFit: 'cover' }}
                   />

@@ -24,7 +24,8 @@ const Login = () => {
         e.preventDefault();
         try {
             await login(formData); //using login from usercontext
-            navigate('/');
+            navigate('/welcome'); 
+            window.location.reload();//not a final fix/jugaad
         } catch (err) {
             console.error(err.response.data);
             setError(err.response.data.message || 'Something went wrong');

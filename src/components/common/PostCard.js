@@ -64,7 +64,7 @@ const PostCard = ({ post, onDelete, onEdit, onLike, currentUser, isInFeedView = 
             e.target.closest('.gcu-comment-form')) {
             return;
         }
-        navigate(`/post/${post._id}`);
+        navigate(`/welcome/post/${post._id}`);
     };
 
     const handleDelete = async () => {
@@ -183,16 +183,14 @@ const PostCard = ({ post, onDelete, onEdit, onLike, currentUser, isInFeedView = 
         }
     };
 
-    const currentUserId = currentUser?._id || currentUser?.id;
-    const authorId = post.author?._id || post.author;
-    const canEdit = !!(currentUserId && authorId && currentUserId === authorId);
-    const canDelete = !!(currentUser && (currentUser.role === 'admin' || currentUser.role === 'superuser' || (currentUserId && authorId && currentUserId === authorId)));
-    const hasLiked = Array.isArray(post.likes) && !!currentUserId && post.likes.includes(currentUserId);
-    const canReport = !!(currentUserId && authorId && currentUserId !== authorId);
+    const canEdit = currentUser && (currentUser.id === post.author._id);
+    const canDelete = currentUser && (currentUser.role === 'admin' || currentUser.role === 'superuser' || currentUser.id === post.author._id);
+    const hasLiked = Array.isArray(post.likes) && post.likes.includes(currentUser.id);
+    const canReport = currentUser && (currentUser.id !== post.author._id);
 
     const handleShare = async (e) => {
         e.stopPropagation();
-        const postUrl = `${window.location.origin}/post/${post._id}`;
+        const postUrl = `${window.location.origin}/welcome/post/${post._id}`;
         
         try {
             await navigator.clipboard.writeText(postUrl);

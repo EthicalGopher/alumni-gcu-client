@@ -12,7 +12,7 @@ const VCMessage = () => {
                                 <h3>Message from the Chancellor:</h3>
                             </div>
                             <div className="letter-header-image">
-                                <img src="/assets/jayanta-sir.jpg" alt="Chancellor, GCU" />
+                                <img src="./assets/jayanta-sir.jpg" alt="Chancellor, GCU" />
                             </div>
                         </div>
                         <p>Dear Esteemed Alumni,</p>

@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import './admin.css';
-import ImageCompressorToggle, { compressSingleImage } from '../../components/common/ImageCompressorToggle';
-
 //this modal is shared between newsform and eventsform
 const SharedImagesAddModal = ({ 
   isOpen, 
@@ -13,54 +11,11 @@ const SharedImagesAddModal = ({
   category //prop to determine if its news or events
 }) => {
   const [selectedImages, setSelectedImages] = useState([]);
-  const [rawFiles, setRawFiles] = useState([]);
-  const [isCompressing, setIsCompressing] = useState(false);
-  const [compressEnabled, setCompressEnabled] = useState(true);
-  const [compressionStats, setCompressionStats] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [error, setError] = useState(null);
 
-  const processFiles = async (filesToProcess, shouldCompress) => {
-    if (!filesToProcess || filesToProcess.length === 0) {
-      setSelectedImages([]);
-      setCompressionStats(null);
-      return;
-    }
-
-    setIsCompressing(true);
-    const origSize = filesToProcess.reduce((sum, f) => sum + f.size, 0);
-
-    let finalFiles = [];
-    if (shouldCompress) {
-      const compressedList = await Promise.all(
-        filesToProcess.map(file => compressSingleImage(file))
-      );
-      finalFiles = compressedList;
-    } else {
-      finalFiles = filesToProcess;
-    }
-
-    const compSize = finalFiles.reduce((sum, f) => sum + f.size, 0);
-    setSelectedImages(finalFiles);
-    setCompressionStats({
-      originalSize: origSize,
-      compressedSize: compSize,
-      count: filesToProcess.length
-    });
-    setIsCompressing(false);
-  };
-
   const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    setRawFiles(files);
-    processFiles(files, compressEnabled);
-  };
-
-  const handleToggleCompress = (enabled) => {
-    setCompressEnabled(enabled);
-    if (rawFiles.length > 0) {
-      processFiles(rawFiles, enabled);
-    }
+    setSelectedImages(Array.from(e.target.files));
   };
 
   const handleUpload = async () => {
@@ -117,13 +72,6 @@ const SharedImagesAddModal = ({
             onChange={handleImageChange}
           />
         </div>
-
-        <ImageCompressorToggle 
-          isEnabled={compressEnabled} 
-          onToggle={handleToggleCompress} 
-          stats={compressionStats}
-          isCompressing={isCompressing}
-        />
 
         <div className="modal-actions">
           <button 

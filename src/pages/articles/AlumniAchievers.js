@@ -60,7 +60,7 @@ const AlumniAchievers = () => {
                         <h2>Alumni Message :</h2>
                     </div> <br />
                     <AlumniCard 
-                        image="/assets/Hirakjyoti_Goswami.jpg"
+                        image="../../assets/Hirakjyoti_Goswami.jpg"
                         name="Mr. Hirakjyoti Goswami" 
                         batch="Batch : 2011-2015" 
                         curr_pos="Current position: Executive Officer, Department of Production." 
@@ -68,7 +68,7 @@ const AlumniAchievers = () => {
                         message=" Message: As a proud alumnus of Girijananda Chowdhury University, I am honoured to reconnect with the Department of Pharmaceutical Sciences, which played a pivotal role in shaping my career. The dedication of the faculty and the enriching academic environment provided me with a strong foundation in pharmaceutical sciences. To the current students, make the most of your time here, embrace challenges, and aim for excellence. I am always happy to connect and contribute to our vibrant alumni network. Wishing the Department of Pharmaceutical Sciences and Girijananda Chowdhury University continued success and growth." 
                     />
                     <AlumniCard 
-                        image="/assets/Ankita_Kashyap.jpg" 
+                        image="../../assets/Ankita_Kashyap.jpg" 
                         name="Dr. Ankita Kashyap " 
                         batch="Batch: 2008-2013" 
                         curr_pos="Current Position: Lecturer " 
@@ -76,7 +76,7 @@ const AlumniAchievers = () => {
                         message=" Message: Greetings from a proud alumnus of the Department of Pharmaceutical Sciences, Girijananda Chowdhury University! My time at GCU laid a strong foundation for my career, thanks to the exceptional faculty and learning environment. To current students, make the most of these opportunities and aim high. Let’s stay connected and support our alma mater's growth. Wishing continued success to the department of Pharmaceutical Sciences and Girijananda Chowdhury University ." 
                     />
                     <AlumniCard 
-                        image="/assets/Ripunjoy_Bordoloi.jpg" 
+                        image="../../assets/Ripunjoy_Bordoloi.jpg" 
                         name="Dr. Ripunjoy Bordoloi" 
                         batch="Batch: 2009-2015" 
                         curr_pos="Current Position: Inspector Of Drugs" 

@@ -91,9 +91,9 @@
 
 
 .main {
-  background-color: #f8fafc;
-  padding-top: 110px;
-  min-height: 100vh;
+  background-color: #eeecec;
+  padding-top: 120px;
+
 }
 
 @media only screen and (max-width: 680px) {
@@ -712,9 +712,8 @@
 
 .album-thumbnail {
   width: 100%;
-  height: 200px;
-  object-fit: contain;
-  background-color: #f1f5f9;
+  height: 180px;
+  object-fit: cover;
   border-radius: 10px;
 }
 
@@ -729,7 +728,7 @@
 
   .images-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
     padding: 50px 20px;
   }
@@ -737,15 +736,11 @@
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    background-color: #f8fafc;
   }
   .image {
     width: 100%;
-    height: 220px;
-    object-fit: contain;
-    background-color: #f8fafc;
+    height: 100%;
+    object-fit: cover;
     transition: transform 0.3s ease;
   }
   .image-overlay {

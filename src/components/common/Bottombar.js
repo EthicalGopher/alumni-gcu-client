@@ -2,6 +2,7 @@ import React from 'react';
 import "../components.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faInstagram, faLinkedin, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { Link } from 'react-router-dom';
 import VisitorCounterBanner from './VisitorCounter';
 
 const Bottombar = () => {

@@ -6,7 +6,7 @@ import api from '../../services/api';
 import SharedImagesDeleteModal from './SharedImagesDeleteModal';
 import SharedImagesAddModal from './SharedImagesAddModal';
 import ActionMenu from './ActionMenu';
-import ImageCompressorToggle, { compressSingleImage } from '../../components/common/ImageCompressorToggle';
+
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
 
@@ -25,11 +25,6 @@ const AdminNewsForm = () => {
     content: '',
     images: []
   });
-  const [rawImages, setRawImages] = useState([]);
-  const [isCompressing, setIsCompressing] = useState(false);
-  const [compressEnabled, setCompressEnabled] = useState(true);
-  const [compressionStats, setCompressionStats] = useState(null);
-
   const [isDeleteImagesModalOpen, setIsDeleteImagesModalOpen] = useState(false);
   const [selectedNewsForImages, setSelectedNewsForImages] = useState(null);
   const [isAddImagesModalOpen, setIsAddImagesModalOpen] = useState(false);
@@ -38,50 +33,11 @@ const AdminNewsForm = () => {
   const { title, content, images } = formData;
   const [isLoading, setIsLoading] = useState(false);
 
-  const processImages = async (files, shouldCompress) => {
-    if (!files || files.length === 0) {
-      setFormData(prev => ({ ...prev, images: [] }));
-      setCompressionStats(null);
-      return;
-    }
-
-    setIsCompressing(true);
-    const origSize = files.reduce((sum, f) => sum + f.size, 0);
-
-    let finalFiles = [];
-    if (shouldCompress) {
-      const compressedList = await Promise.all(
-        files.map(file => compressSingleImage(file))
-      );
-      finalFiles = compressedList;
-    } else {
-      finalFiles = files;
-    }
-
-    const compSize = finalFiles.reduce((sum, f) => sum + f.size, 0);
-    setFormData(prev => ({ ...prev, images: finalFiles }));
-    setCompressionStats({
-      originalSize: origSize,
-      compressedSize: compSize,
-      count: files.length
-    });
-    setIsCompressing(false);
-  };
-
   const onChange = (e) => {
     if (e.target.name === 'images') {
-      const files = Array.from(e.target.files);
-      setRawImages(files);
-      processImages(files, compressEnabled);
+      setFormData({ ...formData, images: Array.from(e.target.files) });
     } else {
       setFormData({ ...formData, [e.target.name]: e.target.value });
-    }
-  };
-
-  const handleToggleCompress = (enabled) => {
-    setCompressEnabled(enabled);
-    if (rawImages.length > 0) {
-      processImages(rawImages, enabled);
     }
   };
 
@@ -100,7 +56,7 @@ const AdminNewsForm = () => {
 
     try {
       await api.post('/news/upload', data, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken') || localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' }
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' }
       });
       setMessage('News Uploaded!');
       setIsModalOpen(false);
@@ -170,7 +126,7 @@ const AdminNewsForm = () => {
     if (window.confirm("Are you sure you want to delete this news?")) {
       try {
         await api.delete(`/news/delete/${newsId}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('accessToken') || localStorage.getItem('token')}` }
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         setNewsList(newsList.filter(news => news._id !== newsId));
         setMessage('News Deleted Successfully');
@@ -266,12 +222,6 @@ const AdminNewsForm = () => {
               onChange={onChange}
               multiple
             />
-            <ImageCompressorToggle 
-              isEnabled={compressEnabled} 
-              onToggle={handleToggleCompress} 
-              stats={compressionStats}
-              isCompressing={isCompressing}
-            />
             <button 
               type="submit" 
               className='admin-form-button'
@@ -307,7 +257,7 @@ const AdminNewsForm = () => {
                 {newsItem.firstImage ? (
                   <img src={`${BASE_URL}${newsItem.firstImage}`} alt="Thumbnail" style={{ height: '100px', objectFit: 'cover' }} />
                 ) : (
-                  <img src="/assets/gcu-building.jpg" alt="Default Thumbnail" style={{ height: '100px', objectFit: 'cover' }} />
+                  <img src="./assets/gcu-building.jpg" alt="Default Thumbnail" style={{ height: '100px', objectFit: 'cover' }} />
                 )}
               </td>
               <td>{newsItem.title}</td>

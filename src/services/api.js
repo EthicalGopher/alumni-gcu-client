@@ -27,23 +27,19 @@ api.interceptors.request.use(async (config) => {
   let accessToken = localStorage.getItem('accessToken');
 
   if (accessToken) {
-    try {
-      const decodeToken = jwtDecode(accessToken);
-      const currentTime = Date.now() / 1000;
+    const decodeToken = jwtDecode(accessToken);
+    const currentTime = Date.now() / 1000;
 
-      if (decodeToken && decodeToken.exp && (decodeToken.exp - currentTime < 10)) {
-        try {
-          const newAccessToken = await refreshAccessToken();
-          config.headers.Authorization = `Bearer ${newAccessToken}`;
-        } catch (error) {
-          console.error('Error refreshing access token:', error);
-        }
-      } else {
-        config.headers.Authorization = `Bearer ${accessToken}`;
+    if(decodeToken.exp - currentTime < 10) {
+      try {
+        const newAccessToken = await refreshAccessToken();
+        config.headers.Authorization = `Bearer ${newAccessToken}`;
+      } catch (error) {
+        console.error('Error refreshing access token:', error);
+        // Handle token refresh error (e.g., logout user)
       }
-    } catch (e) {
-      console.error('Invalid token format:', e);
-      localStorage.removeItem('accessToken');
+    } else {
+      config.headers.Authorization = `Bearer ${accessToken}`;
     }
   }
   return config;

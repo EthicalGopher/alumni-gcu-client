@@ -105,7 +105,7 @@ const Profile = () => {
     }, [id, currentPage]);
 
     const handlePostClick = (post) => {
-        navigate(`/post/${post._id}`);
+        navigate(`/welcome/post/${post._id}`);
     };
 
     const handleClickPage = (pageNumber) => {
