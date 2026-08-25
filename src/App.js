@@ -37,6 +37,7 @@ import CreateAdmin from "./pages/admin/CreateAdmin";
 import AdminFeedbackPanel from "./pages/admin/AdminFeedbackPanel";
 import DashboardCharts from "./pages/admin/AdminStats";
 import FlaggedPosts from "./pages/admin/FlaggedPosts";
+import AdminCompanies from "./pages/admin/AdminCompanies";
 
 
 
@@ -186,6 +187,7 @@ function App() {
                 <Route path="/admin-stats" element={<DashboardCharts />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/alumni-archive" element={<AlumniArchive />} />
+                <Route path="/admin-companies" element={<AdminCompanies />} />
                 <Route path="/news-form" element={<AdminNewsForm />} />
                 <Route path="/events-form" element={<AdminEventsForm />} />
                 <Route path="/photo-upload-form" element={<PhotoUpload />} />

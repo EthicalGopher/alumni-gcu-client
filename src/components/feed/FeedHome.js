@@ -8,6 +8,7 @@ import RecommendedUsersList from "../../components/common/RecommendedUsersList";
 import FeedLayout from "./FeedLayout";
 import FeedNavbar from "./FeedNavbar";
 import VerifiedUsersList from "../common/VerifiedUsersList";
+import CompanyList from "../common/CompanyList";
 import Spinner from "../common/LoadingSpinner"; // Import Spinner
 import { useParams, useNavigate } from 'react-router-dom';
 import FeedPostView from './FeedPostView';
@@ -222,7 +223,6 @@ const Welcome = () => {
                             activeTab === "my-posts" ? "all" : "post";
             fetchPosts(1, category, true);
             
-            // Clean up the state
             navigate(".", { replace: true, state: {} });
         }
     }, [location.state, activeTab, fetchPosts, navigate]);
@@ -233,10 +233,10 @@ const Welcome = () => {
                 <FeedPostView onBack={() => navigate("/welcome")} />
             ) : (
                 <div className="flex flex-col">
-                    {activeTab !== "friends" && (
+                    {activeTab !== "friends" && activeTab !== "companies" && (
                         <PostForm onSubmitPost={handleSubmitPost} isLoading={isLoading} error={error} />
                     )}
-                    {activeTab !== "friends" && (
+                    {activeTab !== "friends" && activeTab !== "companies" && (
                         <>
                             {isLoading && posts.length === 0 ? (
                                 <div className="flex justify-center py-4">
@@ -265,6 +265,7 @@ const Welcome = () => {
                         </>
                     )}
                     {activeTab === "friends" && <VerifiedUsersList />}
+                    {activeTab === "companies" && <CompanyList />}
                 </div>
             )}
             <ToastContainer
@@ -283,6 +284,7 @@ const Welcome = () => {
 
     return (
         <FeedLayout
+            fullWidth={activeTab === "friends" || activeTab === "companies"}
             leftSidebar={<FeedNavbar activeTab={activeTab} setActiveTab={setActiveTab} />}
             mainContent={mainContent}
             rightSidebar={
@@ -294,6 +296,9 @@ const Welcome = () => {
                         <RecommendedUsersList onSwitchToFriends={() => setActiveTab("friends")} />
                     )}
                     {activeTab === "education" && <VerifiedUsersList />}
+                    {activeTab === "companies" && (
+                        <RecommendedUsersList onSwitchToFriends={() => setActiveTab("friends")} />
+                    )}
                     {activeTab === "my-posts" && (
                         <RecommendedUsersList onSwitchToFriends={() => setActiveTab("friends")} />
                     )}

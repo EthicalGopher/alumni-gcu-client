@@ -1,6 +1,6 @@
 import React from "react";
 import "./feed.css";
-import { FaUsers, FaBriefcase, FaGraduationCap, FaHome, FaUser } from "react-icons/fa";
+import { FaUsers, FaBriefcase, FaGraduationCap, FaHome, FaUser, FaBuilding } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const FeedNavbar = ({ activeTab, setActiveTab }) => {
@@ -30,7 +30,11 @@ const FeedNavbar = ({ activeTab, setActiveTab }) => {
         </li>
         <li className={`feed-nav-item ${activeTab === "friends" ? "active" : ""}`} onClick={() => handleTabClick("friends")}>
           <FaUsers className="nav-icon" />
-          <span>Friends</span>
+          <span>Alumni</span>
+        </li>
+        <li className={`feed-nav-item ${activeTab === "companies" ? "active" : ""}`} onClick={() => handleTabClick("companies")}>
+          <FaBuilding className="nav-icon" />
+          <span>Companies</span>
         </li>
         <li className={`feed-nav-item ${activeTab === "jobs" ? "active" : ""}`} onClick={() => handleTabClick("jobs")}>
           <FaBriefcase className="nav-icon" />
