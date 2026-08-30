@@ -3,6 +3,7 @@ import './pages.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NewsCard from '../components/common/NewsCard';
 import EventCard from '../components/common/EventsCard';
+import AlumniFaceCard from '../components/common/AlumniFaceCard';
 import GalleryPreview from "../components/common/GalleryPreview";
 import { useUser } from '../services/UserContext';
 
@@ -104,6 +105,7 @@ const Home = () => {
                 <div className="news-events-container">
                     <NewsCard />
                     <EventCard />
+                    <AlumniFaceCard />
                 </div>
             </section>
 

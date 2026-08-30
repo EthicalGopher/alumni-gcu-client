@@ -1233,7 +1233,8 @@ justify-content: center;
 /* News and event Card */
 
 .news-card-container,
-.event-card-container {
+.event-card-container,
+.alumni-face-card-container {
   align-items: center;
 }
 
@@ -1248,7 +1249,8 @@ justify-content: center;
 }
 
 .news-card,
-.event-card {
+.event-card,
+.alumni-face-card {
   display: flex;
   flex-direction: column;
   width: 400px;
@@ -1263,7 +1265,8 @@ justify-content: center;
 }
 
 .news-card:hover,
-.event-card:hover {
+.event-card:hover,
+.alumni-face-card:hover {
   transform: translateY(-7px);
 }
 
@@ -1271,10 +1274,18 @@ justify-content: center;
 .event-card-thumbnail {
   width: 400px;
   height: 300px;
+  object-fit: cover;
+}
+
+.alumni-face-card-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .news-card-content,
-.event-card-content {
+.event-card-content,
+.alumni-face-card-content {
   padding: 15px;
   display: flex;
   flex-direction: column;
@@ -1303,15 +1314,29 @@ justify-content: center;
   margin-bottom: 10px;
 }
 
+.alumni-face-card-label {
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  background-color: #27357f; /* Brand navy color for alumni faces */
+  padding: 5px 10px;
+  border-radius: 5px;
+  align-self: flex-start;
+  margin-bottom: 10px;
+  font-family: ibm plex sans, sans-serif;
+}
+
 .news-card-title,
-.event-card-title {
+.event-card-title,
+.alumni-face-card-title {
   font-size: 20px;
   font-weight: bold;
   margin: 0 0 10px;
 }
 
 .news-card-date,
-.event-card-organizer {
+.event-card-organizer,
+.alumni-face-card-date {
   font-size: 14px;
   color: #777;
 }

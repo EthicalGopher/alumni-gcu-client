@@ -61,6 +61,12 @@ const AdminLayout = () => {
           </NavLink>
         </li>
         <li>
+          <NavLink to="/admin-alumni-faces" className={getActiveClass}>
+            <FaImages />
+            <span>Alumni Face Show</span>
+          </NavLink>
+        </li>
+        <li>
           <NavLink to="/email-form" className={getActiveClass}>
             <MdAttachEmail />
             <span>Send Mail</span>

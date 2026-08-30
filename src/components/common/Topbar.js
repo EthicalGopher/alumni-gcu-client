@@ -35,7 +35,7 @@ const Topbar = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      setIsDropdownOpen(false); 
+      setIsDropdownOpen(false);
     } catch (err) {
       console.error('Error during logout:', err);
     }
@@ -50,8 +50,8 @@ const Topbar = () => {
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (
-        isNavOpen && 
-        !menuToggleRef.current?.contains(event.target) && 
+        isNavOpen &&
+        !menuToggleRef.current?.contains(event.target) &&
         !navContentRef.current?.contains(event.target) &&
         !dropdownRef.current?.contains(event.target)
       ) {
@@ -59,17 +59,17 @@ const Topbar = () => {
         setIsDropdownOpen(false);
       }
     };
-  
+
     const handleNavClick = (event) => {
       // Close the nav tab if a link inside .nav-content is clicked
       if (event.target.closest(".nav-content a")) {
         closeNav();
       }
     };
-  
+
     document.addEventListener("click", handleOutsideClick);
     document.addEventListener("click", handleNavClick);
-  
+
     return () => {
       document.removeEventListener("click", handleOutsideClick);
       document.removeEventListener("click", handleNavClick);
@@ -78,7 +78,7 @@ const Topbar = () => {
 
   // If loading, show loading screen
   if (loading) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   return (
@@ -100,14 +100,14 @@ const Topbar = () => {
             <ul>
               <li><NavLink to="/" className={({ isActive }) => isActive ? 'active' : ''}>Home</NavLink></li>
               <li>
-              <NavLink 
-        to="/overview" 
-        className={({ isActive }) => 
-          isActive || isAboutActive() ? 'active' : ''
-        }
-      >
-        About
-      </NavLink>
+                <NavLink
+                  to="/overview"
+                  className={({ isActive }) =>
+                    isActive || isAboutActive() ? 'active' : ''
+                  }
+                >
+                  About
+                </NavLink>
                 <ul className='sub-menus'>
                   <li><NavLink to='/overview' className={({ isActive }) => isActive ? 'active' : ''}>Overview</NavLink></li>
                   <li><NavLink to='/vision' className={({ isActive }) => isActive ? 'active' : ''}>Vision and Mission</NavLink></li>
@@ -124,10 +124,11 @@ const Topbar = () => {
               <li><NavLink to="/news" className={({ isActive }) => isActive ? 'active' : ''}>News</NavLink></li>
               <li><NavLink to="/events" className={({ isActive }) => isActive ? 'active' : ''}>Events</NavLink></li>
               <li><NavLink to="/gallery" className={({ isActive }) => isActive ? 'active' : ''}>Gallery</NavLink></li>
+              <li><NavLink to="/alumni-face-show" className={({ isActive }) => isActive ? 'active' : ''}>Alumni</NavLink></li>
               {user && (
                 <>
                   <li><NavLink to="/welcome" className={({ isActive }) => isActive ? 'active' : ''}>Feed</NavLink></li>
-                  {(user.role === 'admin'|| user.role === 'superuser') && (
+                  {(user.role === 'admin' || user.role === 'superuser') && (
                     <li><NavLink to="/admin-stats" className={({ isActive }) => isActive ? 'active' : ''}>Admin Dashboard</NavLink></li>
                   )}
                 </>

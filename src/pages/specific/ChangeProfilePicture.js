@@ -6,6 +6,7 @@ import api from '../../services/api';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import '../pages.css';
 import { useUser } from '../../services/UserContext';
+import { compressImage } from '../../utils/imageCompressor';
 
 function ChangeProfilePicture() {
     const { user, updateUserProfile } = useUser();
@@ -62,9 +63,13 @@ function ChangeProfilePicture() {
         try {
             const croppedImageBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
             const croppedImageFile = new File([croppedImageBlob], file.name, { type: file.type });
+            const compressedPhoto = await compressImage(croppedImageFile, {
+                maxSizeMB: 0.5,
+                maxWidthOrHeight: 800
+            });
     
             const formData = new FormData();
-            formData.append('profilePhoto', croppedImageFile);
+            formData.append('profilePhoto', compressedPhoto);
     
             setUploadStatus('Uploading image...');
     

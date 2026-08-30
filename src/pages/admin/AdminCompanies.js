@@ -14,6 +14,7 @@ import {
   faBriefcase,
   faHistory
 } from '@fortawesome/free-solid-svg-icons';
+import { compressImage } from '../../utils/imageCompressor';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
 
@@ -140,7 +141,11 @@ const AdminCompanies = () => {
       formData.append('description', companyForm.description);
       formData.append('logo', companyForm.logo);
       if (logoFile) {
-        formData.append('logoFile', logoFile);
+        const compressedLogo = await compressImage(logoFile, {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 800
+        });
+        formData.append('logoFile', compressedLogo);
       }
 
       const config = {
