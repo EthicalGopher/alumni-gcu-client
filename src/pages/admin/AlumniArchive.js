@@ -130,11 +130,47 @@ const AlumniArchive = () => {
    // Function to handle row click
    const handleRowClick = (user) => {
     // Generate detailed user content for the modal
+    const companyLogo = user.company?.logo
+      ? (user.company.logo.startsWith('http') ? user.company.logo : `${process.env.REACT_APP_BASE_URL || 'http://localhost:5000'}${user.company.logo}`)
+      : null;
+
     const userContent = (
       <>
         <p><strong>Email:</strong> {user.email}</p>
         <p><strong>Batch:</strong> {user.batch}</p>
         <p><strong>Branch:</strong> {user.branch}</p>
+        <p style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <strong>Primary Company:</strong>
+          {companyLogo && (
+            <img
+              src={companyLogo}
+              alt={user.company.name}
+              style={{ width: '24px', height: '24px', objectFit: 'contain' }}
+              onError={(e) => { e.target.style.display = 'none'; }}
+            />
+          )}
+          {user.company?.name || user.currentWorkingPlace || 'Not assigned'}
+        </p>
+
+        {user.workHistory && user.workHistory.length > 0 && (
+          <div style={{ marginTop: '10px', marginBottom: '10px' }}>
+            <strong>Work History / Companies Worked At:</strong>
+            <ul style={{ paddingLeft: '20px', marginTop: '5px' }}>
+              {user.workHistory.map((item, idx) => {
+                const logo = item.company?.logo ? (item.company.logo.startsWith('http') ? item.company.logo : `${process.env.REACT_APP_BASE_URL || 'http://localhost:5000'}${item.company.logo}`) : null;
+                return (
+                  <li key={idx} style={{ marginBottom: '4px' }}>
+                    {logo && <img src={logo} alt="" style={{ width: '18px', height: '18px', objectFit: 'contain', marginRight: '6px', verticalAlign: 'middle' }} />}
+                    <strong>{item.company?.name || 'Company'}</strong>
+                    {item.designation ? ` - ${item.designation}` : ''}
+                    {item.startDate ? ` (${item.startDate}${item.endDate ? ` - ${item.endDate}` : ' - Present'})` : ''}
+                    {item.isCurrent && <span style={{ color: '#28a745', fontWeight: 'bold', marginLeft: '6px' }}>(Current)</span>}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
         <p><strong>Phone:</strong> {user.phone || 'Not available'}</p>
         <p><strong>Address:</strong> {user.address || 'Not available'}</p>
         <p><strong>LinkedIn:</strong> <a href={user.linkedin} target="_blank" rel="noopener noreferrer">{user.linkedin}</a></p>

@@ -164,10 +164,42 @@ const Profile = () => {
                     <div className="user-profile-details">
                         <h3>About</h3>
                         <p><strong>Biography:</strong> {user?.biography || "No biography available"}</p>
-                        <p><strong>Current Working Place:</strong> {user?.currentWorkingPlace || "Not provided"}</p>
+                        <p><strong>Current Working Place:</strong> {user?.company?.name || user?.currentWorkingPlace || "Not provided"}</p>
                         <p><strong>Designation:</strong> {user?.designation || "Not provided"}</p>
                         <p><strong>Batch:</strong> {user?.batch}</p>
                         <p><strong>Branch:</strong> {user?.branch}</p>
+
+                        <h3>Work Experience & Companies</h3>
+                        {user?.workHistory && user.workHistory.length > 0 ? (
+                            <ul className="user-profile-achievements" style={{ listStyleType: 'none', paddingLeft: 0 }}>
+                                {user.workHistory.map((item, index) => {
+                                    const logoUrl = item.company?.logo
+                                        ? (item.company.logo.startsWith('http') ? item.company.logo : `${process.env.REACT_APP_BASE_URL || 'http://localhost:5000'}${item.company.logo}`)
+                                        : null;
+                                    return (
+                                        <li key={index} style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                            {logoUrl && (
+                                                <img src={logoUrl} alt="" style={{ width: '28px', height: '28px', objectFit: 'contain', borderRadius: '4px', border: '1px solid #ddd', padding: '2px', backgroundColor: '#fff' }} />
+                                            )}
+                                            <div>
+                                                <strong>{item.company?.name || 'Company'}</strong>
+                                                {item.designation ? ` - ${item.designation}` : ''}
+                                                {item.startDate && (
+                                                    <span style={{ color: '#666', fontSize: '13px', marginLeft: '6px' }}>
+                                                        ({item.startDate} - {item.endDate || 'Present'})
+                                                    </span>
+                                                )}
+                                                {item.isCurrent && (
+                                                    <span style={{ backgroundColor: '#28a745', color: '#fff', fontSize: '11px', padding: '2px 6px', borderRadius: '4px', marginLeft: '8px' }}>Current</span>
+                                                )}
+                                            </div>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        ) : (
+                            <p>No extra work history listed</p>
+                        )}
                         <h3>Achievements</h3>
                         {user?.achievements && user.achievements.length > 0 ? (
                             <ul className="user-profile-achievements">

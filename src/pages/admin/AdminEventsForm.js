@@ -6,6 +6,7 @@ import api from '../../services/api';
 import SharedImagesDeleteModal from './SharedImagesDeleteModal';
 import SharedImagesAddModal from './SharedImagesAddModal';
 import ActionMenu from './ActionMenu';
+import { compressImages } from '../../utils/imageCompressor';
 
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
@@ -50,19 +51,24 @@ const AdminEventsForm = () => {
     setModalError(''); // Clear previous error messages
     setIsLoading(true); // Set loading to true when submission starts
     
-    const data = new FormData();
-    data.append('title', title);
-    data.append('content', content);
-    data.append('organizer', organizer);
-    data.append('event_date', event_date);
-    data.append('event_time', event_time);
-    data.append('category', "events");
-  
-    images.forEach((image) => {
-      data.append('images', image);
-    });
-  
     try {
+      const compressedImages = await compressImages(images, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920
+      });
+
+      const data = new FormData();
+      data.append('title', title);
+      data.append('content', content);
+      data.append('organizer', organizer);
+      data.append('event_date', event_date);
+      data.append('event_time', event_time);
+      data.append('category', "events");
+    
+      compressedImages.forEach((image) => {
+        data.append('images', image);
+      });
+    
       const response = await api.post('/events/upload', data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,

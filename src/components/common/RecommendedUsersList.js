@@ -111,7 +111,7 @@ const RecommendedUsersList = ({ onSwitchToFriends }) => {
         onClick={onSwitchToFriends}
         style={buttonStyle}
       >
-        Find Other Mates
+        View All Alumni
       </button>
     </div>
   );

@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import api from "../../services/api";
 import ModalGalleryManager from './ModalGalleryManager';
 import { Button } from 'react-bootstrap';
+import { compressImages } from '../../utils/imageCompressor';
 
 const PhotoUpload = ({ onUploadSuccess }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -64,15 +65,21 @@ const PhotoUpload = ({ onUploadSuccess }) => {
     }
 
     setUploading(true);
-    const formData = new FormData();
-    selectedFiles.forEach(file => {
-      formData.append('images', file);
-    });
-
-    formData.append('albumName', albumName);
-    formData.append('category', 'gallery');
-
     try {
+      // Compress all images before uploading
+      const compressedFiles = await compressImages(selectedFiles, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920
+      });
+
+      const formData = new FormData();
+      compressedFiles.forEach(file => {
+        formData.append('images', file);
+      });
+
+      formData.append('albumName', albumName);
+      formData.append('category', 'gallery');
+
       const response = await api.post('/images/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'

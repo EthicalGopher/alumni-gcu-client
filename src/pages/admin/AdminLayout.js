@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { FaTachometerAlt, FaNewspaper, FaCalendarAlt, FaArrowLeft, FaImages, FaAddressBook } from 'react-icons/fa';
+import { FaTachometerAlt, FaNewspaper, FaCalendarAlt, FaArrowLeft, FaImages, FaAddressBook, FaBuilding } from 'react-icons/fa';
 import { IoPersonAdd } from "react-icons/io5";
 import { MdAttachEmail, MdFeed, MdFeedback } from "react-icons/md";
 import "./admin.css";
@@ -37,6 +37,12 @@ const AdminLayout = () => {
           </NavLink>
         </li>
         <li>
+          <NavLink to="/admin-companies" className={getActiveClass}>
+            <FaBuilding />
+            <span>Companies</span>
+          </NavLink>
+        </li>
+        <li>
           <NavLink to="/news-form" className={getActiveClass}>
             <FaNewspaper />
             <span>Create New News</span>
@@ -52,6 +58,12 @@ const AdminLayout = () => {
           <NavLink to="/photo-upload-form" className={getActiveClass}>
             <FaImages />
             <span>Upload Images</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/admin-alumni-faces" className={getActiveClass}>
+            <FaImages />
+            <span>Alumni Face Show</span>
           </NavLink>
         </li>
         <li>

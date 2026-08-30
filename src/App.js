@@ -29,6 +29,7 @@ import AdminNewsForm from "./pages/admin/AdminNewsForm";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminEventsForm from "./pages/admin/AdminEventsForm";
 import PhotoUpload from "./pages/admin/PhotoUpload";
+import AdminAlumniFaceUpload from "./pages/admin/AdminAlumniFaceUpload";
 import AlumniArchive from "../src/pages/admin/AlumniArchive";
 import AdminEmailForm from "./pages/admin/AdminEmailForm";
 import BulkAddAlumni from "./pages/admin/AlumniRecordUpload";
@@ -37,6 +38,7 @@ import CreateAdmin from "./pages/admin/CreateAdmin";
 import AdminFeedbackPanel from "./pages/admin/AdminFeedbackPanel";
 import DashboardCharts from "./pages/admin/AdminStats";
 import FlaggedPosts from "./pages/admin/FlaggedPosts";
+import AdminCompanies from "./pages/admin/AdminCompanies";
 
 
 
@@ -48,6 +50,7 @@ import Scholarship from "./pages/articles/Scholarship";
 import AssociationMembers from "./pages/articles/AssociationMembers";
 import Gallery from "./pages/articles/Gallery";
 import SingleAlbum from "./pages/articles/SingleAlbum";
+import AlumniFaceShow from "./pages/articles/AlumniFaceShow";
 import Events from "./pages/detail/Events";
 import NewsList from "./pages/detail/NewsArchive";
 import SingleNews from "./pages/detail/SingleNews";
@@ -89,6 +92,7 @@ function App() {
                 <Route path="/news/:id" element={<SingleNews />} />
                 <Route path="/gallery" element={<Gallery />} />
                 <Route path="/gallery/album/:id" element={<SingleAlbum />} />
+                <Route path="/alumni-face-show" element={<AlumniFaceShow />} />
                 <Route path="/contactus" element={<ContactUs />} />
                 <Route path="/feedback" element={<FeedbackForm />} />
                 <Route path="/scholarship" element={<Scholarship />} />
@@ -186,9 +190,11 @@ function App() {
                 <Route path="/admin-stats" element={<DashboardCharts />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/alumni-archive" element={<AlumniArchive />} />
+                <Route path="/admin-companies" element={<AdminCompanies />} />
                 <Route path="/news-form" element={<AdminNewsForm />} />
                 <Route path="/events-form" element={<AdminEventsForm />} />
                 <Route path="/photo-upload-form" element={<PhotoUpload />} />
+                <Route path="/admin-alumni-faces" element={<AdminAlumniFaceUpload />} />
                 <Route path="/email-form" element={<AdminEmailForm />} />
                 <Route path="/add-bulk-alumni" element={<BulkAddAlumni />} />
                 <Route path="/view-feedback" element={<AdminFeedbackPanel />} /> 

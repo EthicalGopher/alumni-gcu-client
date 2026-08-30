@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './admin.css';
+import { compressImages } from '../../utils/imageCompressor';
 //this modal is shared between newsform and eventsform
 const SharedImagesAddModal = ({ 
   isOpen, 
@@ -19,15 +20,20 @@ const SharedImagesAddModal = ({
   };
 
   const handleUpload = async () => {
-    const formData = new FormData();
-    formData.append('category', category);
-    formData.append('title', itemTitle);
-    
-    selectedImages.forEach((image) => {
-      formData.append('images', image);
-    });
-
     try {
+      const compressedImages = await compressImages(selectedImages, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920
+      });
+
+      const formData = new FormData();
+      formData.append('category', category);
+      formData.append('title', itemTitle);
+      
+      compressedImages.forEach((image) => {
+        formData.append('images', image);
+      });
+
       const endpoint = category === 'news' 
         ? `/news/upload-news-images/${itemId}`
         : `/events/upload-events-images/${itemId}`;

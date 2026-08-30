@@ -25,6 +25,17 @@
     min-height: 100vh;
   }
 
+  .main-content-full {
+    width: 75% !important;
+    align-items: stretch !important;
+  }
+
+  .full-width-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
   @media screen and (max-width: 1279px) {  /* Tablet and mobile screens */
 
     .right-sidebar {

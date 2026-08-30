@@ -6,6 +6,7 @@ import api from '../../services/api';
 import SharedImagesDeleteModal from './SharedImagesDeleteModal';
 import SharedImagesAddModal from './SharedImagesAddModal';
 import ActionMenu from './ActionMenu';
+import { compressImages } from '../../utils/imageCompressor';
 
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
@@ -46,15 +47,20 @@ const AdminNewsForm = () => {
     setModalError(''); // Clear previous error messages
     setIsLoading(true); // Set loading state to true
     
-    const data = new FormData();
-    data.append('title', title);
-    data.append('content', content);
-    data.append('category', "news")//upload-images middleware requires the category so dont DELETE THIS again!!!
-    images.forEach(image => {
-      data.append('images', image);
-    });
-
     try {
+      const compressedImages = await compressImages(images, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920
+      });
+
+      const data = new FormData();
+      data.append('title', title);
+      data.append('content', content);
+      data.append('category', "news"); // upload-images middleware requires the category
+      compressedImages.forEach(image => {
+        data.append('images', image);
+      });
+
       await api.post('/news/upload', data, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' }
       });
